@@ -6,6 +6,7 @@ import { ArrowLeft, BookOpen, Clock, Eye, Globe } from 'lucide-react'
 import ViewTracker from '@/components/view-tracker'
 import { useTranslation } from '@/components/providers/language-provider'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
+import { ThemeToggle } from '@/components/theme-toggle'
 
 interface Chapter {
     id: string
@@ -50,7 +51,8 @@ export default function StoryClientPage({ story }: StoryClientPageProps) {
             <ViewTracker slug={story.slug} />
 
             {/* Language Switcher - Absolute positioned */}
-            <div className="absolute top-4 right-4 z-10">
+            <div className="absolute top-4 right-4 z-10 flex items-center gap-2">
+                <ThemeToggle />
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                         <Button variant="ghost" size="icon" className="rounded-full bg-white/50 dark:bg-black/50 backdrop-blur-sm">
@@ -58,10 +60,10 @@ export default function StoryClientPage({ story }: StoryClientPageProps) {
                         </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
-                        <DropdownMenuItem onClick={() => setLanguage('vi')} className={language === 'vi' ? 'bg-orange-50' : ''}>
+                        <DropdownMenuItem onClick={() => setLanguage('vi')} className={language === 'vi' ? 'bg-orange-50 dark:bg-gray-700' : ''}>
                             Tiếng Việt
                         </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => setLanguage('en')} className={language === 'en' ? 'bg-orange-50' : ''}>
+                        <DropdownMenuItem onClick={() => setLanguage('en')} className={language === 'en' ? 'bg-orange-50 dark:bg-gray-700' : ''}>
                             English
                         </DropdownMenuItem>
                     </DropdownMenuContent>

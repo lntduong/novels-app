@@ -10,6 +10,7 @@ import {
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Button } from '@/components/ui/button'
+import { ThemeToggle } from '@/components/theme-toggle'
 
 interface AdminNavProps {
     user: {
@@ -55,6 +56,7 @@ export default function AdminNav({ user }: AdminNavProps) {
                         </div>
                     </div>
                     <div className="flex items-center space-x-4">
+                        <ThemeToggle />
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
                                 <Button variant="ghost" size="icon">
@@ -62,10 +64,10 @@ export default function AdminNav({ user }: AdminNavProps) {
                                 </Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end">
-                                <DropdownMenuItem onClick={() => setLanguage('vi')} className={language === 'vi' ? 'bg-gray-100 dark:bg-gray-800' : ''}>
+                                <DropdownMenuItem onClick={() => setLanguage('vi')} className={language === 'vi' ? 'bg-gray-100 dark:bg-gray-700' : ''}>
                                     Tiếng Việt
                                 </DropdownMenuItem>
-                                <DropdownMenuItem onClick={() => setLanguage('en')} className={language === 'en' ? 'bg-gray-100 dark:bg-gray-800' : ''}>
+                                <DropdownMenuItem onClick={() => setLanguage('en')} className={language === 'en' ? 'bg-gray-100 dark:bg-gray-700' : ''}>
                                     English
                                 </DropdownMenuItem>
                             </DropdownMenuContent>

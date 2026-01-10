@@ -6,6 +6,7 @@ import { BookOpen, TrendingUp, Clock, Globe } from 'lucide-react'
 import SearchBar from '@/components/search-bar'
 import { useTranslation } from '@/components/providers/language-provider'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
+import { ThemeToggle } from '@/components/theme-toggle'
 
 interface StoryWithCount {
     id: string
@@ -36,7 +37,8 @@ export default function HomeClientPage({ stories, totalReads, totalStories, tota
             <div className="bg-gradient-to-br from-orange-50 via-white to-orange-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 border-b border-orange-100 dark:border-gray-700 relative">
 
                 {/* Language Switcher - Absolute positioned for now as there is no public header */}
-                <div className="absolute top-4 right-4 z-10">
+                <div className="absolute top-4 right-4 z-10 flex items-center gap-2">
+                    <ThemeToggle />
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                             <Button variant="ghost" size="icon" className="rounded-full bg-white/50 dark:bg-black/50 backdrop-blur-sm">
@@ -44,10 +46,10 @@ export default function HomeClientPage({ stories, totalReads, totalStories, tota
                             </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
-                            <DropdownMenuItem onClick={() => setLanguage('vi')} className={language === 'vi' ? 'bg-orange-50' : ''}>
+                            <DropdownMenuItem onClick={() => setLanguage('vi')} className={language === 'vi' ? 'bg-orange-50 dark:bg-gray-700' : ''}>
                                 Tiếng Việt
                             </DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => setLanguage('en')} className={language === 'en' ? 'bg-orange-50' : ''}>
+                            <DropdownMenuItem onClick={() => setLanguage('en')} className={language === 'en' ? 'bg-orange-50 dark:bg-gray-700' : ''}>
                                 English
                             </DropdownMenuItem>
                         </DropdownMenuContent>

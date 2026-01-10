@@ -11,6 +11,7 @@ import CommentForm from '@/components/chapter/comment-form'
 import SecureChapterReader from '@/components/chapter/secure-chapter-reader'
 import { useTranslation } from '@/components/providers/language-provider'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
+import { ThemeToggle } from '@/components/theme-toggle'
 
 interface Chapter {
     id: string
@@ -81,6 +82,7 @@ export default function ChapterClientPage({
 
                         <div className="flex items-center gap-2">
                             <ReadingControls />
+                            <ThemeToggle />
                             <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
                                     <Button variant="ghost" size="icon" className="rounded-full">
@@ -88,10 +90,10 @@ export default function ChapterClientPage({
                                     </Button>
                                 </DropdownMenuTrigger>
                                 <DropdownMenuContent align="end">
-                                    <DropdownMenuItem onClick={() => setLanguage('vi')} className={language === 'vi' ? 'bg-orange-50' : ''}>
+                                    <DropdownMenuItem onClick={() => setLanguage('vi')} className={language === 'vi' ? 'bg-orange-50 dark:bg-gray-700' : ''}>
                                         Tiếng Việt
                                     </DropdownMenuItem>
-                                    <DropdownMenuItem onClick={() => setLanguage('en')} className={language === 'en' ? 'bg-orange-50' : ''}>
+                                    <DropdownMenuItem onClick={() => setLanguage('en')} className={language === 'en' ? 'bg-orange-50 dark:bg-gray-700' : ''}>
                                         English
                                     </DropdownMenuItem>
                                 </DropdownMenuContent>

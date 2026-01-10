@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
-import { Minus, Plus, Moon, Sun, Type, Settings, X } from 'lucide-react'
+import { Minus, Plus, Type, Settings, X } from 'lucide-react'
 import {
     Select,
     SelectContent,
@@ -33,26 +33,20 @@ export default function ReadingControls() {
     const { t } = useTranslation()
     const [fontSize, setFontSize] = useState(18)
     const [fontFamily, setFontFamily] = useState('be-vietnam')
-    const [theme, setTheme] = useState<'light' | 'dark'>('light')
 
     useEffect(() => {
         // Load preferences from localStorage
         const savedFontSize = localStorage.getItem('reading-font-size-v2')
         const savedFontFamily = localStorage.getItem('reading-font-family-v2')
-        const savedTheme = localStorage.getItem('reading-theme-v2')
-        const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
 
         if (savedFontSize) setFontSize(Number(savedFontSize))
         if (savedFontFamily) setFontFamily(savedFontFamily)
-        if (savedTheme) setTheme(savedTheme as 'light' | 'dark')
-        else setTheme(systemTheme)
     }, [])
 
     useEffect(() => {
         // Apply preferences
         localStorage.setItem('reading-font-size-v2', fontSize.toString())
         localStorage.setItem('reading-font-family-v2', fontFamily)
-        localStorage.setItem('reading-theme-v2', theme)
 
         document.documentElement.style.setProperty('--reading-font-size', `${fontSize}px`)
 
@@ -60,17 +54,10 @@ export default function ReadingControls() {
         if (selectedFont) {
             document.documentElement.style.setProperty('--reading-font-family', selectedFont.family)
         }
-
-        if (theme === 'dark') {
-            document.documentElement.classList.add('dark')
-        } else {
-            document.documentElement.classList.remove('dark')
-        }
-    }, [fontSize, fontFamily, theme])
+    }, [fontSize, fontFamily])
 
     const increaseFontSize = () => setFontSize(Math.min(fontSize + 2, 32))
     const decreaseFontSize = () => setFontSize(Math.max(fontSize - 2, 12))
-    const toggleTheme = () => setTheme(theme === 'light' ? 'dark' : 'light')
 
     return (
         <>
@@ -105,17 +92,6 @@ export default function ReadingControls() {
                     </Select>
                 </div>
 
-                {/* Divider */}
-                <div className="h-6 w-px bg-gray-300 dark:bg-gray-600" />
-
-                {/* Theme toggle */}
-                <Button variant="outline" onClick={toggleTheme} className="gap-2">
-                    {theme === 'light' ? (
-                        <><Moon className="h-4 w-4" /><span>{t('public.reading_controls.dark')}</span></>
-                    ) : (
-                        <><Sun className="h-4 w-4" /><span>{t('public.reading_controls.light')}</span></>
-                    )}
-                </Button>
             </div>
 
             {/* Mobile View */}
@@ -132,28 +108,6 @@ export default function ReadingControls() {
                         </DialogHeader>
 
                         <div className="space-y-6 py-4">
-                            {/* Theme */}
-                            <div className="flex items-center justify-between">
-                                <span className="font-medium">{t('public.reading_controls.theme')}</span>
-                                <div className="flex bg-gray-100 dark:bg-gray-800 p-1 rounded-lg">
-                                    <Button
-                                        variant={theme === 'light' ? 'secondary' : 'ghost'}
-                                        size="sm"
-                                        onClick={() => setTheme('light')}
-                                        className={theme === 'light' ? 'shadow-sm' : ''}
-                                    >
-                                        <Sun className="h-4 w-4 mr-2" /> {t('public.reading_controls.light')}
-                                    </Button>
-                                    <Button
-                                        variant={theme === 'dark' ? 'secondary' : 'ghost'}
-                                        size="sm"
-                                        onClick={() => setTheme('dark')}
-                                        className={theme === 'dark' ? 'shadow-sm' : ''}
-                                    >
-                                        <Moon className="h-4 w-4 mr-2" /> {t('public.reading_controls.dark')}
-                                    </Button>
-                                </div>
-                            </div>
 
                             {/* Font Size */}
                             <div className="space-y-3">
