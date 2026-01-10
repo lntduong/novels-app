@@ -1,0 +1,181 @@
+{
+    "common": {
+        "dashboard": "Bảng điều khiển",
+        "stories": "Truyện",
+        "users": "Người dùng",
+        "actions": "Thao tác",
+        "cancel": "Hủy",
+        "save": "Lưu",
+        "saving": "Đang lưu...",
+        "delete": "Xóa",
+        "deleting": "Đang xóa...",
+        "edit": "Sửa",
+        "create": "Tạo",
+        "view": "Xem",
+        "back": "Quay lại",
+        "role": "Vai trò",
+        "status": "Trạng thái",
+        "password": "Mật khẩu",
+        "email": "Email",
+        "logout": "Đăng xuất"
+    },
+    "admin": {
+        "welcome": "Chào mừng trở lại! Đây là tổng quan về nền tảng của bạn.",
+        "quick_actions": "Thao tác nhanh",
+        "stats": {
+            "total_stories": "Tổng số truyện",
+            "total_chapters": "Tổng số chương",
+            "total_users": "Tổng số người dùng"
+        },
+        "users": {
+            "title": "Quản lý Người dùng",
+            "subtitle": "Quản lý người dùng và phân quyền",
+            "create_button": "Thêm người dùng",
+            "create_dialog_title": "Thêm người dùng mới",
+            "create_dialog_desc": "Thêm người dùng mới vào hệ thống. Họ sẽ nhận được thông tin đăng nhập.",
+            "table": {
+                "user": "Người dùng",
+                "role": "Vai trò",
+                "created": "Ngày tạo",
+                "actions": "Thao tác"
+            },
+            "no_users": "Không tìm thấy người dùng nào",
+            "delete_confirm_title": "Bạn có chắc chắn không?",
+            "delete_confirm_desc": "Hành động này sẽ xóa vĩnh viễn người dùng {email} và quyền truy cập của họ. Không thể hoàn tác hành động này.",
+            "success_create": "Tạo người dùng thành công!",
+            "error_create": "Tạo người dùng thất bại",
+            "error_delete": "Xóa người dùng thất bại"
+        },
+        "stories": {
+            "title": "Quản lý Truyện",
+            "subtitle": "Quản lý thư viện truyện của bạn",
+            "new_button": "Thêm truyện mới",
+            "no_stories": "Chưa có truyện nào. Hãy tạo tác phẩm đầu tiên của bạn!",
+            "create_first": "Tạo truyện mới",
+            "chapters_count": "{count} chương",
+            "edit": {
+                "title": "Chỉnh sửa truyện",
+                "upload_word": "Tải lên tài liệu Word",
+                "info_title": "Thông tin truyện",
+                "manage_chapters": "Quản lý các chương của truyện",
+                "add_chapter": "Thêm chương mới",
+                "edit_chapter": "Sửa chương",
+                "new_chapter": "Chương mới",
+                "word_upload_desc": "Tải lên tệp .docx để tự động phát hiện và nhập chương",
+                "click_upload": "Nhấp để tải lên",
+                "processing": "Đang xử lý tài liệu...",
+                "detected_chapters": "Đã phát hiện ({count}) chương",
+                "save_all": "Lưu tất cả chương",
+                "title_label": "Tên truyện",
+                "author_label": "Tên tác giả",
+                "desc_label": "Giới thiệu",
+                "back_to_stories": "Quay lại danh sách",
+                "save_changes": "Lưu thay đổi",
+                "success_update": "Cập nhật truyện thành công!",
+                "chapters": {
+                    "chapter_list_title": "Danh sách chương ({count})",
+                    "title_label": "Tên chương",
+                    "password_label": "Mật khẩu truy cập (Tùy chọn)",
+                    "password_help": "Nếu cài đặt, người dùng sẽ cần mật khẩu để xem nội dung.",
+                    "content_label": "Nội dung (HTML)",
+                    "locked": "Đã khóa",
+                    "delete_confirm": "Bạn có chắc chắn muốn xóa chương này không?",
+                    "success_save": "Đã lưu thành công {count} chương!",
+                    "no_chapters": "Chưa có chương nào. Hãy thêm chương đầu tiên hoặc tải lên tài liệu Word.",
+                    "details": "Thứ tự: {order} • {len} ký tự"
+                },
+                "placeholders": {
+                    "title": "Nhập tên truyện",
+                    "author": "Nhập tên tác giả",
+                    "desc": "Nhập giới thiệu truyện...",
+                    "chapter_title": "Nhập tên chương",
+                    "chapter_content": "<p>Nội dung chương...</p>",
+                    "password": "Để trống để truy cập công khai"
+                },
+                "cover_label": "Ảnh bìa",
+                "cover_help": "Tùy chọn: Tải lên ảnh bìa hoặc nhập URL trực tiếp.",
+                "image_upload": {
+                    "error_type": "Vui lòng chọn file ảnh",
+                    "error_size": "File ảnh quá lớn (tối đa 5MB)",
+                    "success": "Upload ảnh thành công",
+                    "error_generic": "Lỗi khi upload ảnh",
+                    "placeholder_url": "Hoặc nhập URL ảnh...",
+                    "uploading": "Đang upload...",
+                    "drag_drop": "Click để upload hoặc kéo thả",
+                    "format_help": "PNG, JPG, WEBP (max 5MB)",
+                    "preview_alt": "Xem trước ảnh bìa"
+                }
+            }
+        }
+    },
+    "roles": {
+        "SUPER_ADMIN": "Quản trị cấp cao",
+        "ADMIN": "Quản trị viên",
+        "EDITOR": "Biên tập viên",
+        "VIEWER": "Người xem"
+    },
+    "status": {
+        "PUBLISHED": "Đã đăng",
+        "DRAFT": "Bản nháp",
+        "ARCHIVED": "Lưu trữ"
+    },
+    "public": {
+        "home": {
+            "hero_title_1": "Khám Phá Thế Giới",
+            "hero_title_2": " Truyện Dành Cho Bạn",
+            "hero_subtitle": "Khám phá hàng ngàn tiểu thuyết miễn phí, từ lãng mạn đến huyền ảo, tất cả ở một nơi",
+            "search_placeholder": "Tìm kiếm truyện...",
+            "stats": {
+                "stories": "Truyện",
+                "chapters": "Chương",
+                "reads": "Lượt đọc"
+            },
+            "latest_updates": "Truyện Mới Cập Nhật",
+            "latest_desc": "Những câu chuyện mới nhất được cập nhật hàng ngày",
+            "view_all": "Xem Tất Cả",
+            "no_stories": "Chưa có truyện nào",
+            "read_now": "Đọc ngay",
+            "author": "Tác giả",
+            "chapters_count": "{count} chương",
+            "views_count": "{count} lượt đọc"
+        },
+        "story": {
+            "back_home": "Trở về trang chủ",
+            "chapters_list": "Danh sách chương",
+            "total_chapters": "Tổng số: {count} chương",
+            "no_chapters": "Chưa có chương nào",
+            "intro": "Giới thiệu",
+            "read_now": "Đọc ngay",
+            "author": "Tác giả",
+            "views": "Lượt đọc",
+            "chapter_date": "Cập nhật: {date}"
+        },
+        "chapter": {
+            "back_story": "Trở về trang truyện",
+            "chapter_progress": "Chương {current} / {total}",
+            "previous": "Trước",
+            "next": "Sau",
+            "comments": "Bình luận",
+            "rating": "Đánh giá",
+            "locked": "Chương khóa",
+            "unlock_btn": "Mở khóa"
+        },
+        "reading_controls": {
+            "title": "Cài đặt hiển thị",
+            "font_size": "Cỡ chữ",
+            "font_family": "Phông chữ",
+            "theme": "Giao diện",
+            "light": "Sáng",
+            "dark": "Tối"
+        },
+        "comments": {
+            "loading": "Đang tải bình luận...",
+            "empty": "Chưa có bình luận nào. Hãy là người đầu tiên!",
+            "delete_title": "Xóa bình luận?",
+            "delete_confirm": "Bạn có chắc muốn xóa bình luận này? Hành động này không thể hoàn tác.",
+            "delete_success": "Đã xóa bình luận",
+            "delete_error": "Không thể xóa bình luận",
+            "page_info": "Trang {current} / {total}"
+        }
+    }
+}

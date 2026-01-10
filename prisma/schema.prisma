@@ -1,0 +1,113 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  SUPER_ADMIN
+  ADMIN
+  EDITOR
+  VIEWER
+}
+
+enum StoryStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  role      UserRole @default(VIEWER)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  stories        Story[]
+  chapterRatings ChapterRating[]
+  chapterComments ChapterComment[]
+
+  @@map("users")
+}
+
+model Story {
+  id          String      @id @default(uuid())
+  title       String
+  authorName  String?     // Tên tác giả
+  slug        String      @unique
+  description String?     @db.Text
+  coverImage  String?
+  status      StoryStatus @default(DRAFT)
+  views       Int         @default(0)
+  authorId    String
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  author   User      @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  chapters Chapter[]
+
+  @@index([slug])
+  @@index([status])
+  @@index([authorId])
+  @@map("stories")
+}
+
+model Chapter {
+  id        String   @id @default(uuid())
+  title     String
+  slug      String
+  content   String   @db.Text
+  order     Int
+  accessPassword String? // Optional password for chapter access
+  storyId   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  story    Story             @relation(fields: [storyId], references: [id], onDelete: Cascade)
+  ratings  ChapterRating[]
+  comments ChapterComment[]
+
+  @@unique([storyId, slug])
+  @@index([storyId])
+  @@index([slug])
+  @@map("chapters")
+}
+
+model ChapterRating {
+  id            String   @id @default(uuid())
+  rating        Int      // 1-5 stars
+  userId        String?  // Optional - null for anonymous
+  anonymousName String?  // Display name for anonymous users
+  chapterId     String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  user    User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  chapter Chapter @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, chapterId]) // One rating per logged-in user per chapter
+  @@index([chapterId])
+}
+
+model ChapterComment {
+  id            String   @id @default(uuid())
+  content       String   @db.Text
+  userId        String?  // Optional - null for anonymous
+  anonymousName String?  // Display name for anonymous users
+  chapterId     String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  user    User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  chapter Chapter @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+
+  @@index([chapterId])
+  @@index([userId])
+}

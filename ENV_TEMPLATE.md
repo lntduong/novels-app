@@ -1,0 +1,15 @@
+# Supabase Configuration
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key
+
+# Database - Get this from Supabase Settings > Database > Connection String
+# Format: postgresql://postgres.[project-ref]:[password]@aws-0-[region].pooler.supabase.com:6543/postgres
+DATABASE_URL=your_database_connection_string
+
+# App Configuration
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+
+# Default Super Admin (used for seeding)
+DEFAULT_ADMIN_EMAIL=admin@example.com
+DEFAULT_ADMIN_PASSWORD=change_this_password
