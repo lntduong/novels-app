@@ -11,11 +11,29 @@ export default function SearchBar() {
     const searchParams = useSearchParams()
     const [query, setQuery] = useState(searchParams.get('q') || '')
 
+    // Sync query with URL if URL changes externally
+    useEffect(() => {
+        setQuery(searchParams.get('q') || '')
+    }, [searchParams])
+
     const handleSearch = (e: React.FormEvent) => {
         e.preventDefault()
+        const params = new URLSearchParams(searchParams.toString())
+
         if (query.trim()) {
-            router.push(`/search?q=${encodeURIComponent(query.trim())}`)
+            params.set('q', query.trim())
+        } else {
+            params.delete('q')
         }
+
+        router.push(`/search?${params.toString()}`)
+    }
+
+    const handleClear = () => {
+        setQuery('')
+        const params = new URLSearchParams(searchParams.toString())
+        params.delete('q')
+        router.push(`/search?${params.toString()}`)
     }
 
     return (
@@ -27,11 +45,27 @@ export default function SearchBar() {
                     placeholder="Tìm kiếm truyện theo tên, tác giả hoặc mô tả..."
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
-                    className="pl-10 pr-4 py-6 text-lg"
+                    className="pl-10 pr-24 py-6 text-lg"
                 />
-                <Button type="submit" className="absolute right-2 top-1/2 transform -translate-y-1/2">
-                    Tìm kiếm
-                </Button>
+
+                <div className="absolute right-2 top-1/2 transform -translate-y-1/2 flex items-center gap-2">
+                    {query && (
+                        <button
+                            type="button"
+                            onClick={handleClear}
+                            className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 mr-2"
+                        >
+                            <span className="sr-only">Clear</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                <line x1="18" y1="6" x2="6" y2="18"></line>
+                                <line x1="6" y1="6" x2="18" y2="18"></line>
+                            </svg>
+                        </button>
+                    )}
+                    <Button type="submit">
+                        Tìm kiếm
+                    </Button>
+                </div>
             </div>
         </form>
     )

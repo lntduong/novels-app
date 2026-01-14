@@ -19,13 +19,17 @@ Whether you're a reader looking for your next favorite story or an admin managin
 ### For Readers 📖
 - **Immersive Reading Experience**: Customizable font sizes, font families, and line spacing.
 - **Theme Support**: Built-in Dark/Light mode switcher for comfortable reading day or night.
-- **Engagement**: Rate chapters and leave anonymous or authenticated comments.
+- **Advanced Search**: Discover stories by genre, keywords, and popularity using granular filters.
+- **Engagement**: Rate chapters, track view counts, and leave anonymous or authenticated comments.
 - **Privacy & Security**: Content protection system prevents unauthorized copying (anti-copy, right-click, dev-tools).
+- **Personal Library**: Bookmark favorite stories and automatically track reading history.
+- **User Accounts**: Secure registration and login system to sync progress.
 - **Localization**: Full support for English and Vietnamese (Tiếng Việt) languages.
 
 ### For Admins & Creators ✍️
 - **Dashboard**: Comprehensive overview of stats (Stories, Chapters, Users).
 - **Content Management**: Create, edit, publish, or archive stories and chapters intuitively.
+- **Genre Management**: Organize content with a flexible, seeded genre system.
 - **Rich Text Editor**: Integrated editor for writing and formatting chapter content.
 - **User Management**: Role-based access control (Super Admin, Admin, Editor, Viewer).
 - **File Support**: Import content directly from Word documents.
@@ -61,6 +65,7 @@ erDiagram
     User ||--o{ ChapterRating : rates
     User ||--o{ ChapterComment : comments
     Story ||--o{ Chapter : contains
+    Story }|..|{ Genre : classified_as
     Story }|..|{ User : author
     Chapter ||--o{ ChapterRating : has
     Chapter ||--o{ ChapterComment : has
@@ -198,8 +203,9 @@ Distributed under the MIT License. See `LICENSE` for more information.
 - [x] Public Reader Interface with Customization
 - [x] Dark Mode Support
 - [x] Content Copy Protection
-- [ ] User Bookmarks & Reading History
-- [ ] Advanced Search with Filters
+- [x] Advanced Search with Filters & Genres
+- [x] User Bookmarks & Reading History
+- [x] User Authentication & Registration
 - [ ] Author Payment System
 - [ ] Mobile App (React Native)
 

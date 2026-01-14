@@ -33,6 +33,8 @@
             "create_button": "Thêm người dùng",
             "create_dialog_title": "Thêm người dùng mới",
             "create_dialog_desc": "Thêm người dùng mới vào hệ thống. Họ sẽ nhận được thông tin đăng nhập.",
+            "role": "Vai trò",
+            "password_placeholder": "Tối thiểu 6 ký tự",
             "table": {
                 "user": "Người dùng",
                 "role": "Vai trò",
@@ -177,6 +179,32 @@
             "delete_success": "Đã xóa bình luận",
             "delete_error": "Không thể xóa bình luận",
             "page_info": "Trang {current} / {total}"
+        }
+    },
+    "auth": {
+        "login": {
+            "title": "Đăng nhập",
+            "subtitle": "Nhập thông tin xác thực để truy cập tài khoản",
+            "email_label": "Email",
+            "password_label": "Mật khẩu",
+            "button": "Đăng nhập",
+            "loading": "Đang đăng nhập...",
+            "no_account": "Chưa có tài khoản?",
+            "register_link": "Đăng ký ngay"
+        },
+        "register": {
+            "title": "Đăng ký",
+            "subtitle": "Tạo tài khoản mới để tham gia",
+            "email_label": "Email",
+            "password_label": "Mật khẩu",
+            "button": "Đăng ký",
+            "loading": "Đang tạo tài khoản...",
+            "has_account": "Đã có tài khoản?",
+            "login_link": "Đăng nhập",
+            "success": "Đăng ký thành công! Bạn có thể đăng nhập ngay.",
+            "error_exists": "Email đã được sử dụng",
+            "error_generic": "Đăng ký thất bại",
+            "check_email": "Đăng ký thành công! Vui lòng kiểm tra email để xác thực tài khoản."
         }
     }
 }

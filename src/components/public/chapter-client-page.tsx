@@ -31,6 +31,7 @@ interface PrevNextChapter {
 interface ChapterClientPageProps {
     chapter: Chapter
     story: {
+        id: string
         title: string
         slug: string
         chaptersCount: number
@@ -49,6 +50,28 @@ export default function ChapterClientPage({
 }: ChapterClientPageProps) {
     const { t, language, setLanguage } = useTranslation()
     const progressPercent = ((currentIndex + 1) / story.chaptersCount) * 100
+
+    React.useEffect(() => {
+        const saveHistory = async () => {
+            try {
+                await fetch('/api/user/history', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        storyId: story.id,
+                        chapterId: chapter.id
+                    })
+                })
+            } catch (error) {
+                console.error('Failed to save reading history', error)
+            }
+        }
+
+        // Delay slightly to ensure user actually loaded the page
+        const timer = setTimeout(saveHistory, 2000)
+        return () => clearTimeout(timer)
+    }, [story.id, chapter.id])
+
 
     return (
         <div className="min-h-screen bg-white dark:bg-gray-900">

@@ -13,6 +13,7 @@ interface Story {
     slug: string
     status: string
     createdAt: string
+    coverImage: string | null
     _count: {
         chapters: number
     }
@@ -44,38 +45,54 @@ export default function StoriesClientPage({ stories }: StoriesClientPageProps) {
                 </Link>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 {stories.map((story) => (
-                    <Card key={story.id} className="hover:shadow-lg transition-shadow">
-                        <CardContent className="p-6">
-                            <div className="flex justify-between items-start mb-4">
-                                <div className="h-12 w-12 rounded-lg bg-primary/10 flex items-center justify-center">
-                                    <BookOpen className="h-6 w-6 text-primary" />
+                    <Card key={story.id} className="group hover:shadow-lg transition-all duration-200 overflow-hidden border-gray-200 dark:border-gray-700">
+                        <div className="relative aspect-[2/1] bg-gray-100 dark:bg-gray-800 overflow-hidden">
+                            {story.coverImage ? (
+                                <img
+                                    src={story.coverImage}
+                                    alt={story.title}
+                                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                                />
+                            ) : (
+                                <div className="w-full h-full flex items-center justify-center text-gray-400">
+                                    <BookOpen className="h-12 w-12 opacity-50" />
                                 </div>
-                                <span className={`px-2 py-1 text-xs rounded-full ${story.status === 'PUBLISHED'
-                                    ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
+                            )}
+                            <div className="absolute top-2 right-2">
+                                <span className={`px-2.5 py-0.5 text-xs font-medium rounded-full backdrop-blur-md shadow-sm border ${story.status === 'PUBLISHED'
+                                    ? 'bg-green-100/90 text-green-800 border-green-200 dark:bg-green-900/90 dark:text-green-200 dark:border-green-800'
                                     : story.status === 'DRAFT'
-                                        ? 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200'
-                                        : 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200'
+                                        ? 'bg-yellow-100/90 text-yellow-800 border-yellow-200 dark:bg-yellow-900/90 dark:text-yellow-200 dark:border-yellow-800'
+                                        : 'bg-gray-100/90 text-gray-800 border-gray-200 dark:bg-gray-900/90 dark:text-gray-200 dark:border-gray-800'
                                     }`}>
                                     {t(`status.${story.status}`)}
                                 </span>
                             </div>
-                            <h3 className="font-semibold text-lg mb-2 line-clamp-1">{story.title}</h3>
-                            <p className="text-sm text-gray-500 mb-4">
-                                {t('admin.stories.chapters_count', { count: story._count.chapters })}
-                                {' • '}
-                                {new Date(story.createdAt).toLocaleDateString()}
-                            </p>
-                            <div className="flex space-x-2">
-                                <Link href={`/story/${story.slug}`} className="flex-1" target="_blank">
-                                    <Button variant="outline" className="w-full">
+                        </div>
+
+                        <CardContent className="p-4">
+                            <div className="mb-4">
+                                <h3 className="font-bold text-lg leading-tight mb-2 line-clamp-1 group-hover:text-primary transition-colors" title={story.title}>
+                                    {story.title}
+                                </h3>
+                                <p className="text-sm text-gray-500 dark:text-gray-400 flex items-center gap-2">
+                                    <span>{t('admin.stories.chapters_count', { count: story._count.chapters })}</span>
+                                    <span className="w-1 h-1 rounded-full bg-gray-300 dark:bg-gray-600" />
+                                    <span>{new Date(story.createdAt).toLocaleDateString()}</span>
+                                </p>
+                            </div>
+
+                            <div className="grid grid-cols-2 gap-3">
+                                <Link href={`/story/${story.slug}`} className="w-full" target="_blank">
+                                    <Button variant="outline" size="sm" className="w-full hover:bg-gray-50 dark:hover:bg-gray-800">
                                         <BookOpen className="h-4 w-4 mr-2" />
                                         {t('common.view')}
                                     </Button>
                                 </Link>
-                                <Link href={`/admin/stories/${story.id}`} className="flex-1">
-                                    <Button variant="default" className="w-full">
+                                <Link href={`/admin/stories/${story.id}`} className="w-full">
+                                    <Button variant="default" size="sm" className="w-full">
                                         <Edit className="h-4 w-4 mr-2" />
                                         {t('common.edit')}
                                     </Button>

@@ -39,6 +39,8 @@
                 "created": "Created",
                 "actions": "Actions"
             },
+            "role": "Role",
+            "password_placeholder": "Minimum 6 characters",
             "no_users": "No users found",
             "delete_confirm_title": "Are you sure?",
             "delete_confirm_desc": "This will permanently delete the user {email} and remove their access to the platform. This action cannot be undone.",
@@ -177,6 +179,32 @@
             "delete_success": "Comment deleted",
             "delete_error": "Failed to delete comment",
             "page_info": "Page {current} of {total}"
+        }
+    },
+    "auth": {
+        "login": {
+            "title": "Login",
+            "subtitle": "Enter your credentials to access your account",
+            "email_label": "Email",
+            "password_label": "Password",
+            "button": "Login",
+            "loading": "Logging in...",
+            "no_account": "Don't have an account?",
+            "register_link": "Register"
+        },
+        "register": {
+            "title": "Register",
+            "subtitle": "Create a new account to join",
+            "email_label": "Email",
+            "password_label": "Password",
+            "button": "Register",
+            "loading": "Creating account...",
+            "has_account": "Already have an account?",
+            "login_link": "Login",
+            "success": "Registration successful! You can now login.",
+            "error_exists": "User already exists",
+            "error_generic": "Registration failed",
+            "check_email": "Registration successful! Please check your email to verify your account."
         }
     }
 }

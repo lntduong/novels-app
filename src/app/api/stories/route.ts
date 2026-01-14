@@ -12,6 +12,7 @@ export async function GET() {
                 author: {
                     select: { email: true, role: true },
                 },
+                genres: true,
                 _count: {
                     select: { chapters: true },
                 },
@@ -48,7 +49,7 @@ export async function POST(request: Request) {
         }
 
         const body = await request.json()
-        const { title, authorName, description, coverImage, status } = body
+        const { title, authorName, description, coverImage, status, genreIds } = body
 
         if (!title) {
             return NextResponse.json(
@@ -68,7 +69,13 @@ export async function POST(request: Request) {
                 coverImage: coverImage || null,
                 status: status || 'DRAFT',
                 authorId: user.id,
+                genres: genreIds && Array.isArray(genreIds) ? {
+                    connect: genreIds.map((id: string) => ({ id }))
+                } : undefined
             },
+            include: {
+                genres: true
+            }
         })
 
         return NextResponse.json({ story }, { status: 201 })

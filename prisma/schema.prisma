@@ -33,6 +33,8 @@ model User {
   stories        Story[]
   chapterRatings ChapterRating[]
   chapterComments ChapterComment[]
+  bookmarks       Bookmark[]
+  readingHistory  ReadingHistory[]
 
   @@map("users")
 }
@@ -52,11 +54,24 @@ model Story {
 
   author   User      @relation(fields: [authorId], references: [id], onDelete: Cascade)
   chapters Chapter[]
+  genres   Genre[]
+  bookmarks Bookmark[]
+  readingHistory ReadingHistory[]
 
   @@index([slug])
   @@index([status])
   @@index([authorId])
   @@map("stories")
+}
+
+model Genre {
+  id    String @id @default(uuid())
+  name  String
+  slug  String @unique
+
+  stories Story[]
+
+  @@map("genres")
 }
 
 model Chapter {
@@ -73,6 +88,7 @@ model Chapter {
   story    Story             @relation(fields: [storyId], references: [id], onDelete: Cascade)
   ratings  ChapterRating[]
   comments ChapterComment[]
+  readingHistory ReadingHistory[]
 
   @@unique([storyId, slug])
   @@index([storyId])
@@ -110,4 +126,35 @@ model ChapterComment {
 
   @@index([chapterId])
   @@index([userId])
+}
+
+model Bookmark {
+  id        String   @id @default(uuid())
+  userId    String
+  storyId   String
+  createdAt DateTime @default(now())
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  story  Story  @relation(fields: [storyId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, storyId])
+  @@index([userId])
+  @@map("bookmarks")
+}
+
+model ReadingHistory {
+  id        String   @id @default(uuid())
+  userId    String
+  storyId   String
+  chapterId String
+  updatedAt DateTime @updatedAt
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  story   Story   @relation(fields: [storyId], references: [id], onDelete: Cascade)
+  chapter Chapter @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, storyId])
+  @@index([userId])
+  @@index([updatedAt])
+  @@map("reading_history")
 }

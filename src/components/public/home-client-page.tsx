@@ -16,6 +16,7 @@ interface StoryWithCount {
     authorName: string | null
     description: string | null
     updatedAt: Date
+    views: number
     _count: {
         chapters: number
     }
@@ -38,6 +39,11 @@ export default function HomeClientPage({ stories, totalReads, totalStories, tota
 
                 {/* Language Switcher - Absolute positioned for now as there is no public header */}
                 <div className="absolute top-4 right-4 z-10 flex items-center gap-2">
+                    <Link href="/library">
+                        <Button variant="ghost" size="icon" className="rounded-full bg-white/50 dark:bg-black/50 backdrop-blur-sm" title="My Library">
+                            <BookOpen className="h-5 w-5" />
+                        </Button>
+                    </Link>
                     <ThemeToggle />
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
@@ -143,6 +149,10 @@ export default function HomeClientPage({ stories, totalReads, totalStories, tota
                                                 <BookOpen className="w-16 h-16 text-orange-300 dark:text-gray-500" />
                                             </div>
                                         )}
+                                        {/* Views Badge */}
+                                        <div className="absolute top-2 right-2 bg-black/60 backdrop-blur-sm text-white text-xs px-2 py-1 rounded-full flex items-center gap-1">
+                                            <span>👁️ {story.views.toLocaleString()}</span>
+                                        </div>
                                     </div>
 
                                     {/* Story Info */}

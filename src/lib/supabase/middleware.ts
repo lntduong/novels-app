@@ -60,5 +60,23 @@ export async function updateSession(request: NextRequest) {
     // If this is not done, you may be causing the browser and server to go out
     // of sync and terminate the user's session prematurely.
 
+    // Set user info in headers for API routes
+    if (user) {
+        // We need to fetch the user role effectively
+        // Since we can't easily use Prisma here in Edge Runtime (usually),
+        // we might rely on metadata if stored, or we just pass the ID and let the API check the DB.
+        // However, the API expects x-user-role.
+        // For now, let's update the API to fetch the user if headers are missing,
+        // OR we try to fetch the role here if possible. This middleware might not run on Edge.
+        // Actually, let's look at how other APIs do auth.
+        // It seems other APIs might be using getSession directly or checking DB.
+        // BUT the Genre API explicitly checks headers.
+
+        // Let's modify the API to check auth using supabase/prisma if headers are missing.
+        // Relying on middleware headers for security is good pattern but needs robust implementation.
+        // Given complexity of adding Prisma to middleware (Edge issues), 
+        // I will FIX THE API ENDPOINTS to check auth directly instead of relying on headers.
+    }
+
     return supabaseResponse
 }

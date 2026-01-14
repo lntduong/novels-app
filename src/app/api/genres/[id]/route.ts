@@ -1,11 +1,9 @@
-import { NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase/server'
-import { prisma } from '@/lib/prisma'
-import { canManageContent } from '@/lib/permissions'
-import { generateSlug } from '@/lib/word-parser'
 
-// PATCH /api/stories/[id] - Update story
-export async function PATCH(
+import { NextResponse } from 'next/server'
+import { prisma } from '@/lib/prisma'
+import { createClient } from '@/lib/supabase/server'
+
+export async function PUT(
     request: Request,
     { params }: { params: Promise<{ id: string }> }
 ) {
@@ -22,48 +20,40 @@ export async function PATCH(
             where: { id: user.id },
         })
 
-        if (!dbUser || !canManageContent(dbUser.role)) {
+        if (!dbUser || (dbUser.role !== 'ADMIN' && dbUser.role !== 'SUPER_ADMIN')) {
             return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
         }
 
         const body = await request.json()
-        const { title, authorName, description, coverImage, status, genreIds } = body
+        const { name } = body
 
-        const updateData: any = {}
-        if (title) {
-            updateData.title = title
-            updateData.slug = generateSlug(title)
-        }
-        if (authorName !== undefined) updateData.authorName = authorName || null
-        if (description !== undefined) updateData.description = description || null
-        if (coverImage !== undefined) updateData.coverImage = coverImage || null
-        if (status) updateData.status = status
-
-        if (genreIds && Array.isArray(genreIds)) {
-            updateData.genres = {
-                set: genreIds.map((id: string) => ({ id }))
-            }
+        if (!name) {
+            return NextResponse.json({ error: 'Name is required' }, { status: 400 })
         }
 
-        const story = await prisma.story.update({
+        // Generate slug from name
+        const slug = name.toLowerCase()
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '')
+            .replace(/đ/g, 'd').replace(/Đ/g, 'D')
+            .replace(/[^a-z0-9]+/g, '-')
+            .replace(/^-+|-+$/g, '')
+
+        const genre = await prisma.genre.update({
             where: { id },
-            data: updateData,
-            include: {
-                genres: true
-            }
+            data: { name, slug }
         })
 
-        return NextResponse.json({ story })
+        return NextResponse.json({ genre })
     } catch (error) {
-        console.error('Error updating story:', error)
+        console.error('Failed to update genre:', error)
         return NextResponse.json(
-            { error: 'Failed to update story' },
+            { error: 'Failed to update genre' },
             { status: 500 }
         )
     }
 }
 
-// DELETE /api/stories/[id] - Delete story
 export async function DELETE(
     request: Request,
     { params }: { params: Promise<{ id: string }> }
@@ -81,19 +71,19 @@ export async function DELETE(
             where: { id: user.id },
         })
 
-        if (!dbUser || !canManageContent(dbUser.role)) {
+        if (!dbUser || (dbUser.role !== 'ADMIN' && dbUser.role !== 'SUPER_ADMIN')) {
             return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
         }
 
-        await prisma.story.delete({
-            where: { id },
+        await prisma.genre.delete({
+            where: { id }
         })
 
         return NextResponse.json({ success: true })
     } catch (error) {
-        console.error('Error deleting story:', error)
+        console.error('Failed to delete genre:', error)
         return NextResponse.json(
-            { error: 'Failed to delete story' },
+            { error: 'Failed to delete genre' },
             { status: 500 }
         )
     }

@@ -34,6 +34,7 @@ export default async function StoryEditPage({
             chapters: {
                 orderBy: { order: 'asc' },
             },
+            genres: true,
         },
     })
 

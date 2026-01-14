@@ -37,6 +37,7 @@ export default async function StoryDetailPage({
                 orderBy: { order: 'asc' },
             },
             author: true,
+            genres: true,
         },
     })
 

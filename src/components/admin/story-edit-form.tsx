@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -11,7 +11,7 @@ import { useTranslation } from '@/components/providers/language-provider'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import ImageUpload from '@/components/admin/image-upload'
 import Link from 'next/link'
-import { ArrowLeft } from 'lucide-react'
+import { ArrowLeft, Check } from 'lucide-react'
 
 interface Story {
     id: string
@@ -21,13 +21,21 @@ interface Story {
     description: string | null
     coverImage: string | null
     status: 'DRAFT' | 'PUBLISHED' | 'ARCHIVED'
+    genres?: { id: string, name: string }[]
 }
 
-export default function StoryEditForm({ story }: { story: any }) {
+interface Genre {
+    id: string
+    name: string
+}
+
+export default function StoryEditForm({ story }: { story: Story }) {
     const { t } = useTranslation()
     const router = useRouter()
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState('')
+    const [availableGenres, setAvailableGenres] = useState<Genre[]>([])
+    const [genresLoaded, setGenresLoaded] = useState(false)
 
     const [formData, setFormData] = useState({
         title: story.title,
@@ -35,7 +43,26 @@ export default function StoryEditForm({ story }: { story: any }) {
         description: story.description || '',
         coverImage: story.coverImage || '',
         status: story.status,
+        genreIds: story.genres?.map(g => g.id) || [] as string[],
     })
+
+    // Fetch genres on mount
+    useEffect(() => {
+        const fetchGenres = async () => {
+            try {
+                const res = await fetch('/api/genres')
+                const data = await res.json()
+                if (data.genres) {
+                    setAvailableGenres(data.genres)
+                }
+            } catch (err) {
+                console.error('Failed to fetch genres', err)
+            } finally {
+                setGenresLoaded(true)
+            }
+        }
+        fetchGenres()
+    }, [])
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
@@ -55,7 +82,7 @@ export default function StoryEditForm({ story }: { story: any }) {
             }
 
             router.refresh()
-            alert(t('admin.stories.edit.success_message'))
+            alert(t('admin.stories.edit.success_update'))
         } catch (err) {
             setError(err instanceof Error ? err.message : 'An error occurred')
         } finally {
@@ -139,6 +166,54 @@ export default function StoryEditForm({ story }: { story: any }) {
                                 <SelectItem value="ARCHIVED">{t('status.ARCHIVED')}</SelectItem>
                             </SelectContent>
                         </Select>
+                    </div>
+
+                    <div className="space-y-3">
+                        <Label>Genres</Label>
+                        <div className="border rounded-md p-4 max-h-60 overflow-y-auto bg-white dark:bg-gray-950">
+                            {!genresLoaded ? (
+                                <p className="text-sm text-gray-500">Loading genres...</p>
+                            ) : availableGenres.length === 0 ? (
+                                <p className="text-sm text-gray-500">No genres found. Go to Genre settings to add some.</p>
+                            ) : (
+                                <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                                    {availableGenres.map((genre) => {
+                                        const isSelected = formData.genreIds.includes(genre.id)
+                                        return (
+                                            <div
+                                                key={genre.id}
+                                                className={`
+                                                    flex items-center space-x-2 p-2 rounded border cursor-pointer transition-colors
+                                                    ${isSelected ? 'border-primary bg-primary/5' : 'border-transparent hover:bg-gray-100 dark:hover:bg-gray-800'}
+                                                `}
+                                                onClick={() => {
+                                                    const newGenreIds = isSelected
+                                                        ? formData.genreIds.filter(id => id !== genre.id)
+                                                        : [...formData.genreIds, genre.id]
+                                                    setFormData({ ...formData, genreIds: newGenreIds })
+                                                }}
+                                            >
+                                                <input
+                                                    type="checkbox"
+                                                    className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
+                                                    checked={isSelected}
+                                                    onChange={() => { }} // Handle click on parent div
+                                                    tabIndex={-1}
+                                                />
+                                                <span className="text-sm font-medium">{genre.name}</span>
+                                            </div>
+                                        )
+                                    })}
+                                </div>
+                            )}
+                        </div>
+                        <div className="flex flex-wrap gap-2">
+                            {availableGenres.filter(g => formData.genreIds.includes(g.id)).map(genre => (
+                                <span key={genre.id} className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80">
+                                    {genre.name}
+                                </span>
+                            ))}
+                        </div>
                     </div>
 
                     {error && (

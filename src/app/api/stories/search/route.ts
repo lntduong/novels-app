@@ -6,21 +6,32 @@ export async function GET(request: Request) {
         const { searchParams } = new URL(request.url)
         const q = searchParams.get('q') || ''
         const sort = searchParams.get('sort') || 'date' // 'date' or 'views'
+        const genres = searchParams.get('genres')?.split(',').filter(Boolean) || []
 
-        if (!q || q.trim().length < 2) {
-            return NextResponse.json({ stories: [] })
+        const where: any = {
+            status: 'PUBLISHED',
+        }
+
+        if (q && q.trim().length >= 2) {
+            where.OR = [
+                { title: { contains: q, mode: 'insensitive' } },
+                { authorName: { contains: q, mode: 'insensitive' } },
+                { description: { contains: q, mode: 'insensitive' } },
+            ]
+        }
+
+        if (genres.length > 0) {
+            where.genres = {
+                some: {
+                    slug: { in: genres }
+                }
+            }
         }
 
         const stories = await prisma.story.findMany({
-            where: {
-                status: 'PUBLISHED',
-                OR: [
-                    { title: { contains: q, mode: 'insensitive' } },
-                    { authorName: { contains: q, mode: 'insensitive' } },
-                    { description: { contains: q, mode: 'insensitive' } },
-                ],
-            },
+            where,
             include: {
+                genres: true,
                 _count: {
                     select: { chapters: true },
                 },

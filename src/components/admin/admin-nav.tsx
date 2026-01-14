@@ -2,7 +2,8 @@
 
 import { useTranslation } from '@/components/providers/language-provider'
 import Link from 'next/link'
-import { Globe } from 'lucide-react'
+import { usePathname } from 'next/navigation'
+import { Globe, Tags } from 'lucide-react'
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -21,6 +22,7 @@ interface AdminNavProps {
 
 export default function AdminNav({ user }: AdminNavProps) {
     const { t, setLanguage, language } = useTranslation()
+    const pathname = usePathname()
 
     return (
         <nav className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
@@ -41,9 +43,24 @@ export default function AdminNav({ user }: AdminNavProps) {
                             </Link>
                             <Link
                                 href="/admin/stories"
-                                className="text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white px-3 py-2 rounded-md text-sm font-medium"
+                                className={`px-3 py-2 rounded-md text-sm font-medium ${pathname?.startsWith('/admin/stories')
+                                        ? 'bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white'
+                                        : 'text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'
+                                    }`}
                             >
                                 {t('common.stories')}
+                            </Link>
+                            <Link
+                                href="/admin/genres"
+                                className={`px-3 py-2 rounded-md text-sm font-medium ${pathname?.startsWith('/admin/genres')
+                                        ? 'bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white'
+                                        : 'text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'
+                                    }`}
+                            >
+                                <span className="flex items-center gap-2">
+                                    <Tags className="w-4 h-4" />
+                                    Genres
+                                </span>
                             </Link>
                             {(user.role === 'SUPER_ADMIN' || user.role === 'ADMIN') && (
                                 <Link

@@ -7,27 +7,28 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { createClient } from '@/lib/supabase/client'
 import { useTranslation } from '@/components/providers/language-provider'
 import { ThemeToggle } from '@/components/theme-toggle'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { Globe } from 'lucide-react'
 
-export default function LoginPage() {
+export default function RegisterPage() {
     const router = useRouter()
     const { t, language, setLanguage } = useTranslation()
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [error, setError] = useState('')
+    const [success, setSuccess] = useState('')
     const [loading, setLoading] = useState(false)
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
         setError('')
+        setSuccess('')
         setLoading(true)
 
         try {
-            const res = await fetch('/api/auth/login', {
+            const res = await fetch('/api/auth/register', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email, password }),
@@ -35,13 +36,19 @@ export default function LoginPage() {
 
             if (!res.ok) {
                 const data = await res.json()
-                throw new Error(data.error || 'Login failed')
+                throw new Error(data.error || t('auth.register.error_generic'))
             }
 
-            // Force refresh to update auth state
-            router.refresh()
-            // Redirect to home or previous page
-            router.push('/')
+            const data = await res.json()
+
+            if (data.requireConfirmation) {
+                setSuccess(t('auth.register.check_email'))
+                setEmail('')
+                setPassword('')
+            } else {
+                router.refresh()
+                router.push('/')
+            }
         } catch (err) {
             setError(err instanceof Error ? err.message : 'An error occurred')
         } finally {
@@ -73,15 +80,15 @@ export default function LoginPage() {
 
             <Card className="w-full max-w-md">
                 <CardHeader className="space-y-1">
-                    <CardTitle className="text-2xl font-bold text-center">{t('auth.login.title')}</CardTitle>
+                    <CardTitle className="text-2xl font-bold text-center">{t('auth.register.title')}</CardTitle>
                     <CardDescription className="text-center">
-                        {t('auth.login.subtitle')}
+                        {t('auth.register.subtitle')}
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
                     <form onSubmit={handleSubmit} className="space-y-4">
                         <div className="space-y-2">
-                            <Label htmlFor="email">{t('auth.login.email_label')}</Label>
+                            <Label htmlFor="email">{t('auth.register.email_label')}</Label>
                             <Input
                                 id="email"
                                 type="email"
@@ -93,13 +100,14 @@ export default function LoginPage() {
                             />
                         </div>
                         <div className="space-y-2">
-                            <Label htmlFor="password">{t('auth.login.password_label')}</Label>
+                            <Label htmlFor="password">{t('auth.register.password_label')}</Label>
                             <Input
                                 id="password"
                                 type="password"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                                 required
+                                minLength={6}
                                 disabled={loading}
                             />
                         </div>
@@ -108,12 +116,17 @@ export default function LoginPage() {
                                 {error}
                             </div>
                         )}
+                        {success && (
+                            <div className="text-sm text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/20 p-3 rounded-md">
+                                {success}
+                            </div>
+                        )}
                         <Button type="submit" className="w-full" disabled={loading}>
-                            {loading ? t('auth.login.loading') : t('auth.login.button')}
+                            {loading ? t('auth.register.loading') : t('auth.register.button')}
                         </Button>
 
                         <div className="text-center text-sm text-gray-600 dark:text-gray-400 mt-4">
-                            {t('auth.login.no_account')} <Link href="/register" className="text-primary hover:underline font-medium">{t('auth.login.register_link')}</Link>
+                            {t('auth.register.has_account')} <Link href="/login" className="text-primary hover:underline font-medium">{t('auth.register.login_link')}</Link>
                         </div>
                     </form>
                 </CardContent>

@@ -85,6 +85,7 @@ export default async function ChapterReaderPage({
         <ChapterClientPage
             chapter={fullChapter}
             story={{
+                id: storyMetadata.id,
                 title: storyMetadata.title,
                 slug: storyMetadata.slug,
                 chaptersCount: storyMetadata.chapters.length
