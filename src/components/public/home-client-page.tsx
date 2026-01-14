@@ -127,11 +127,11 @@ export default function HomeClientPage({ stories, totalReads, totalStories, tota
                             <Link
                                 key={story.id}
                                 href={`/story/${story.slug}`}
-                                className="group"
+                                className="group h-full block"
                             >
-                                <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden hover:shadow-lg hover:border-primary/50 dark:hover:border-primary/50 transition-all duration-200">
+                                <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden hover:shadow-lg hover:border-primary/50 dark:hover:border-primary/50 transition-all duration-200 h-full flex flex-col">
                                     {/* Cover Image */}
-                                    <div className="aspect-[2/3] bg-gradient-to-br from-orange-100 to-orange-200 dark:from-gray-700 dark:to-gray-600 relative overflow-hidden">
+                                    <div className="aspect-[2/3] bg-gradient-to-br from-orange-100 to-orange-200 dark:from-gray-700 dark:to-gray-600 relative overflow-hidden flex-shrink-0">
                                         {story.coverImage ? (
                                             <img
                                                 src={story.coverImage}
@@ -146,7 +146,7 @@ export default function HomeClientPage({ stories, totalReads, totalStories, tota
                                     </div>
 
                                     {/* Story Info */}
-                                    <div className="p-4">
+                                    <div className="p-4 flex flex-col flex-1">
                                         <h3 className="font-semibold text-gray-900 dark:text-white line-clamp-2 mb-2 group-hover:text-primary transition-colors">
                                             {story.title}
                                         </h3>
@@ -160,7 +160,7 @@ export default function HomeClientPage({ stories, totalReads, totalStories, tota
                                                 {story.description}
                                             </p>
                                         )}
-                                        <div className="flex items-center gap-3 text-xs text-gray-500 dark:text-gray-400">
+                                        <div className="flex items-center gap-3 text-xs text-gray-500 dark:text-gray-400 mt-auto">
                                             <span className="flex items-center gap-1">
                                                 <BookOpen className="w-3.5 h-3.5" />
                                                 {t('public.home.chapters_count', { count: story._count.chapters })}

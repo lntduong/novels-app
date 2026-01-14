@@ -63,6 +63,7 @@
                 "new_chapter": "Chương mới",
                 "word_upload_desc": "Tải lên tệp .docx để tự động phát hiện và nhập chương",
                 "click_upload": "Nhấp để tải lên",
+                "or_drag": "hoặc kéo thả",
                 "processing": "Đang xử lý tài liệu...",
                 "detected_chapters": "Đã phát hiện ({count}) chương",
                 "save_all": "Lưu tất cả chương",

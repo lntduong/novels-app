@@ -63,6 +63,7 @@
                 "new_chapter": "New Chapter",
                 "word_upload_desc": "Upload a .docx file to automatically detect and import chapters",
                 "click_upload": "Click to upload",
+                "or_drag": "or drag and drop",
                 "processing": "Processing document...",
                 "detected_chapters": "Detected Chapters ({count})",
                 "save_all": "Save All Chapters",
