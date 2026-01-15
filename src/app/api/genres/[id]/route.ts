@@ -1,7 +1,7 @@
 
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { createClient } from '@/lib/supabase/server'
+import { auth } from '@/auth'
 
 export async function PUT(
     request: Request,
@@ -9,15 +9,13 @@ export async function PUT(
 ) {
     try {
         const { id } = await params
-        const supabase = await createClient()
-        const { data: { user } } = await supabase.auth.getUser()
-
-        if (!user) {
+        const session = await auth()
+        if (!session?.user) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
         }
 
         const dbUser = await prisma.user.findUnique({
-            where: { id: user.id },
+            where: { id: session.user.id },
         })
 
         if (!dbUser || (dbUser.role !== 'ADMIN' && dbUser.role !== 'SUPER_ADMIN')) {
@@ -60,15 +58,13 @@ export async function DELETE(
 ) {
     try {
         const { id } = await params
-        const supabase = await createClient()
-        const { data: { user } } = await supabase.auth.getUser()
-
-        if (!user) {
+        const session = await auth()
+        if (!session?.user) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
         }
 
         const dbUser = await prisma.user.findUnique({
-            where: { id: user.id },
+            where: { id: session.user.id },
         })
 
         if (!dbUser || (dbUser.role !== 'ADMIN' && dbUser.role !== 'SUPER_ADMIN')) {

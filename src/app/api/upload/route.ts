@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase/server'
+import { auth } from '@/auth'
+import { StorageService } from '@/lib/storage'
 
 export async function POST(request: Request) {
     try {
@@ -29,11 +30,8 @@ export async function POST(request: Request) {
             )
         }
 
-        const supabase = await createClient()
-
-        // Check authentication
-        const { data: { user } } = await supabase.auth.getUser()
-        if (!user) {
+        const session = await auth()
+        if (!session?.user) {
             return NextResponse.json(
                 { error: 'Authentication required' },
                 { status: 401 }
@@ -43,33 +41,17 @@ export async function POST(request: Request) {
         // Generate unique filename
         const fileExt = file.name.split('.').pop()
         const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`
-        const filePath = `${fileName}`
+        const filePath = `${fileName}` // Using simplified path for bucket root
 
-        // Upload to Supabase Storage
-        const { data, error } = await supabase.storage
-            .from('covers')
-            .upload(filePath, file)
+        // Upload to S3 (MinIO)
+        const publicUrl = await StorageService.uploadFile(file, filePath)
 
-        if (error) {
-            console.error('Upload error:', error)
-
-            if (error.message.includes('row-level security') || (error as any).statusCode === '403') {
-                return NextResponse.json(
-                    { error: 'Missing Storage Policy. Please configure RLS policies for the "covers" bucket in Supabase Dashboard.' },
-                    { status: 403 }
-                )
-            }
-
+        if (!publicUrl) {
             return NextResponse.json(
-                { error: 'Failed to upload image: ' + error.message },
+                { error: 'Failed to upload image' },
                 { status: 500 }
             )
         }
-
-        // Get public URL
-        const { data: { publicUrl } } = supabase.storage
-            .from('covers')
-            .getPublicUrl(filePath)
 
         return NextResponse.json({ url: publicUrl })
     } catch (error) {

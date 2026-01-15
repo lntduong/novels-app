@@ -1,7 +1,7 @@
 
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { createClient } from '@/lib/supabase/server'
+import { auth } from '@/auth'
 import { canManageContent } from '@/lib/permissions'
 
 export async function GET() {
@@ -26,15 +26,13 @@ export async function GET() {
 
 export async function POST(request: Request) {
     try {
-        const supabase = await createClient()
-        const { data: { user } } = await supabase.auth.getUser()
-
-        if (!user) {
+        const session = await auth()
+        if (!session?.user) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
         }
 
         const dbUser = await prisma.user.findUnique({
-            where: { id: user.id },
+            where: { id: session.user.id },
         })
 
         // Check if user is admin or super_admin. canManageContent allows Editor too,

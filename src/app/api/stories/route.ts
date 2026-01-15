@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase/server'
+import { auth } from '@/auth'
 import { prisma } from '@/lib/prisma'
 import { canManageContent } from '@/lib/permissions'
 import { generateSlug } from '@/lib/word-parser'
@@ -33,15 +33,13 @@ export async function GET() {
 // POST /api/stories - Create new story
 export async function POST(request: Request) {
     try {
-        const supabase = await createClient()
-        const { data: { user } } = await supabase.auth.getUser()
-
-        if (!user) {
+        const session = await auth()
+        if (!session?.user) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
         }
 
         const dbUser = await prisma.user.findUnique({
-            where: { id: user.id },
+            where: { id: session.user.id },
         })
 
         if (!dbUser || !canManageContent(dbUser.role)) {
@@ -68,7 +66,7 @@ export async function POST(request: Request) {
                 description: description || null,
                 coverImage: coverImage || null,
                 status: status || 'DRAFT',
-                authorId: user.id,
+                authorId: session.user.id,
                 genres: genreIds && Array.isArray(genreIds) ? {
                     connect: genreIds.map((id: string) => ({ id }))
                 } : undefined

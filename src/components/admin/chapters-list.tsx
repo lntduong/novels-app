@@ -145,7 +145,7 @@ export default function ChaptersList({ storyId, initialChapters }: ChaptersListP
                                     id="title"
                                     value={formData.title}
                                     onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                                    placeholder={t('admin.stories.placeholders.chapter_title')}
+                                    placeholder={t('admin.stories.edit.placeholders.chapter_title')}
                                     required
                                     disabled={loading}
                                 />
@@ -157,7 +157,7 @@ export default function ChaptersList({ storyId, initialChapters }: ChaptersListP
                                     id="password"
                                     value={formData.accessPassword}
                                     onChange={(e) => setFormData({ ...formData, accessPassword: e.target.value })}
-                                    placeholder={t('admin.stories.placeholders.password')}
+                                    placeholder={t('admin.stories.edit.placeholders.password')}
                                     disabled={loading}
                                 />
                                 <p className="text-xs text-gray-500">
@@ -171,7 +171,7 @@ export default function ChaptersList({ storyId, initialChapters }: ChaptersListP
                                     id="content"
                                     value={formData.content}
                                     onChange={(e) => setFormData({ ...formData, content: e.target.value })}
-                                    placeholder={t('admin.stories.placeholders.chapter_content')}
+                                    placeholder={t('admin.stories.edit.placeholders.chapter_content')}
                                     required
                                     rows={10}
                                     className="font-mono text-sm"

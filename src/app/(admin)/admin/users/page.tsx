@@ -1,4 +1,4 @@
-import { createClient } from '@/lib/supabase/server'
+import { auth } from '@/auth'
 import { prisma } from '@/lib/prisma'
 import { canManageUsers } from '@/lib/permissions'
 import { redirect } from 'next/navigation'
@@ -8,8 +8,8 @@ import UserActions from '@/components/admin/user-actions'
 import UsersClientPage from '@/components/admin/users-client-page'
 
 export default async function UsersPage() {
-    const supabase = await createClient()
-    const { data: { user } } = await supabase.auth.getUser()
+    const session = await auth()
+    const user = session?.user
 
     if (!user) {
         redirect('/login')

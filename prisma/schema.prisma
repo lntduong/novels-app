@@ -3,6 +3,7 @@
 
 generator client {
   provider = "prisma-client-js"
+  binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
 }
 
 datasource db {
@@ -26,6 +27,7 @@ enum StoryStatus {
 model User {
   id        String   @id @default(uuid())
   email     String   @unique
+  password  String?  // Hashed password for NextAuth
   role      UserRole @default(VIEWER)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

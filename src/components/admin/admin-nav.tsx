@@ -12,6 +12,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { Button } from '@/components/ui/button'
 import { ThemeToggle } from '@/components/theme-toggle'
+import { logout } from '@/lib/actions'
 
 interface AdminNavProps {
     user: {
@@ -44,8 +45,8 @@ export default function AdminNav({ user }: AdminNavProps) {
                             <Link
                                 href="/admin/stories"
                                 className={`px-3 py-2 rounded-md text-sm font-medium ${pathname?.startsWith('/admin/stories')
-                                        ? 'bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white'
-                                        : 'text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'
+                                    ? 'bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white'
+                                    : 'text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'
                                     }`}
                             >
                                 {t('common.stories')}
@@ -53,8 +54,8 @@ export default function AdminNav({ user }: AdminNavProps) {
                             <Link
                                 href="/admin/genres"
                                 className={`px-3 py-2 rounded-md text-sm font-medium ${pathname?.startsWith('/admin/genres')
-                                        ? 'bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white'
-                                        : 'text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'
+                                    ? 'bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white'
+                                    : 'text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'
                                     }`}
                             >
                                 <span className="flex items-center gap-2">
@@ -94,7 +95,7 @@ export default function AdminNav({ user }: AdminNavProps) {
                             {user.email} ({t(`roles.${user.role}`)})
                         </span>
 
-                        <form action="/api/auth/logout" method="POST">
+                        <form action={logout}>
                             <button
                                 type="submit"
                                 className="text-sm text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300"

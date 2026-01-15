@@ -1,7 +1,7 @@
 
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { createClient } from '@/lib/supabase/server'
+import { auth } from '@/auth'
 
 export async function GET(request: Request) {
     try {
@@ -12,17 +12,15 @@ export async function GET(request: Request) {
             return NextResponse.json({ error: 'Story ID is required' }, { status: 400 })
         }
 
-        const supabase = await createClient()
-        const { data: { user } } = await supabase.auth.getUser()
-
-        if (!user) {
+        const session = await auth()
+        if (!session?.user) {
             return NextResponse.json({ isBookmarked: false })
         }
 
         const bookmark = await prisma.bookmark.findUnique({
             where: {
                 userId_storyId: {
-                    userId: user.id,
+                    userId: session.user.id,
                     storyId
                 }
             }

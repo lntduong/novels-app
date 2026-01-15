@@ -1,19 +1,18 @@
 import { NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase/server'
+import { auth } from '@/auth'
 import { prisma } from '@/lib/prisma'
+import bcrypt from 'bcryptjs'
 
 // GET /api/admin/users - List all users (SUPER_ADMIN only)
 export async function GET() {
     try {
-        const supabase = await createClient()
-        const { data: { user } } = await supabase.auth.getUser()
-
-        if (!user) {
+        const session = await auth()
+        if (!session?.user) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
         }
 
         const dbUser = await prisma.user.findUnique({
-            where: { id: user.id },
+            where: { id: session.user.id },
         })
 
         if (!dbUser || dbUser.role !== 'SUPER_ADMIN') {
@@ -22,6 +21,14 @@ export async function GET() {
 
         const users = await prisma.user.findMany({
             orderBy: { createdAt: 'desc' },
+            select: {
+                id: true,
+                email: true,
+                role: true,
+                createdAt: true,
+                updatedAt: true,
+                // Exclude password
+            }
         })
 
         return NextResponse.json({ users })
@@ -37,15 +44,13 @@ export async function GET() {
 // POST /api/admin/users - Create new user
 export async function POST(request: Request) {
     try {
-        const supabase = await createClient()
-        const { data: { user } } = await supabase.auth.getUser()
-
-        if (!user) {
+        const session = await auth()
+        if (!session?.user) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
         }
 
         const dbUser = await prisma.user.findUnique({
-            where: { id: user.id },
+            where: { id: session.user.id },
         })
 
         if (!dbUser || dbUser.role !== 'SUPER_ADMIN') {
@@ -62,31 +67,32 @@ export async function POST(request: Request) {
             )
         }
 
-        // Create user in Supabase Auth
-        const { data: authData, error: authError } = await supabase.auth.admin.createUser({
-            email,
-            password,
-            email_confirm: true,
+        // Check if user exists
+        const existingUser = await prisma.user.findUnique({
+            where: { email }
         })
 
-        if (authError) {
-            console.error('Supabase auth error:', authError)
+        if (existingUser) {
             return NextResponse.json(
-                { error: authError.message },
+                { error: 'User already exists' },
                 { status: 400 }
             )
         }
 
+        const hashedPassword = await bcrypt.hash(password, 10)
+
         // Create user in database
         const newUser = await prisma.user.create({
             data: {
-                id: authData.user.id,
                 email,
+                password: hashedPassword,
                 role,
             },
         })
 
-        return NextResponse.json({ user: newUser }, { status: 201 })
+        const { password: _, ...userWithoutPassword } = newUser
+
+        return NextResponse.json({ user: userWithoutPassword }, { status: 201 })
     } catch (error) {
         console.error('Error creating user:', error)
         return NextResponse.json(

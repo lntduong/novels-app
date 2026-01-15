@@ -1,20 +1,18 @@
 
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { createClient } from '@/lib/supabase/server'
+import { auth } from '@/auth'
 
 // GET /api/user/bookmarks - List user's bookmarks
 export async function GET(request: Request) {
     try {
-        const supabase = await createClient()
-        const { data: { user } } = await supabase.auth.getUser()
-
-        if (!user) {
+        const session = await auth()
+        if (!session?.user) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
         }
 
         const bookmarks = await prisma.bookmark.findMany({
-            where: { userId: user.id },
+            where: { userId: session.user.id },
             include: {
                 story: {
                     select: {
@@ -44,10 +42,8 @@ export async function GET(request: Request) {
 // POST /api/user/bookmarks - Toggle bookmark
 export async function POST(request: Request) {
     try {
-        const supabase = await createClient()
-        const { data: { user } } = await supabase.auth.getUser()
-
-        if (!user) {
+        const session = await auth()
+        if (!session?.user) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
         }
 
@@ -60,7 +56,7 @@ export async function POST(request: Request) {
         const existing = await prisma.bookmark.findUnique({
             where: {
                 userId_storyId: {
-                    userId: user.id,
+                    userId: session.user.id,
                     storyId
                 }
             }
@@ -76,7 +72,7 @@ export async function POST(request: Request) {
             // Add
             await prisma.bookmark.create({
                 data: {
-                    userId: user.id,
+                    userId: session.user.id,
                     storyId
                 }
             })

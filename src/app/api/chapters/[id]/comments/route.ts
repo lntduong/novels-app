@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { createClient } from '@/lib/supabase/server'
+import { auth } from '@/auth'
 import { isValidAnonymousName } from '@/lib/constants'
 
 export async function POST(
@@ -28,8 +28,8 @@ export async function POST(
         }
 
         // Check authentication
-        const supabase = await createClient()
-        const { data: { user } } = await supabase.auth.getUser()
+        const session = await auth()
+        const user = session?.user
 
         let userId: string | null = null
         let finalAnonymousName: string | null = null

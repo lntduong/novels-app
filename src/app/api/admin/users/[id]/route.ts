@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase/server'
+import { auth } from '@/auth'
 import { prisma } from '@/lib/prisma'
 
 // PATCH /api/admin/users/[id] - Update user role
@@ -9,15 +9,13 @@ export async function PATCH(
 ) {
     try {
         const { id } = await params
-        const supabase = await createClient()
-        const { data: { user } } = await supabase.auth.getUser()
-
-        if (!user) {
+        const session = await auth()
+        if (!session?.user) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
         }
 
         const dbUser = await prisma.user.findUnique({
-            where: { id: user.id },
+            where: { id: session.user.id },
         })
 
         if (!dbUser || dbUser.role !== 'SUPER_ADMIN') {
@@ -56,15 +54,13 @@ export async function DELETE(
 ) {
     try {
         const { id } = await params
-        const supabase = await createClient()
-        const { data: { user } } = await supabase.auth.getUser()
-
-        if (!user) {
+        const session = await auth()
+        if (!session?.user) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
         }
 
         const dbUser = await prisma.user.findUnique({
-            where: { id: user.id },
+            where: { id: session.user.id },
         })
 
         if (!dbUser || dbUser.role !== 'SUPER_ADMIN') {
@@ -72,7 +68,7 @@ export async function DELETE(
         }
 
         // Don't allow deleting yourself
-        if (id === user.id) {
+        if (id === session.user.id) {
             return NextResponse.json(
                 { error: 'Cannot delete your own account' },
                 { status: 400 }
@@ -84,9 +80,6 @@ export async function DELETE(
             where: { id },
         })
 
-        // Delete from Supabase Auth
-        await supabase.auth.admin.deleteUser(id)
-
         return NextResponse.json({ success: true })
     } catch (error) {
         console.error('Error deleting user:', error)
@@ -96,3 +89,5 @@ export async function DELETE(
         )
     }
 }
+
+

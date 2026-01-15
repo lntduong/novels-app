@@ -1,5 +1,5 @@
 import { notFound, redirect } from 'next/navigation'
-import { createClient } from '@/lib/supabase/server'
+import { auth } from '@/auth'
 import { prisma } from '@/lib/prisma'
 import { canManageContent } from '@/lib/permissions'
 import StoryEditForm from '@/components/admin/story-edit-form'
@@ -13,8 +13,8 @@ export default async function StoryEditPage({
     params: Promise<{ id: string }>
 }) {
     const { id } = await params
-    const supabase = await createClient()
-    const { data: { user } } = await supabase.auth.getUser()
+    const session = await auth()
+    const user = session?.user
 
     if (!user) {
         redirect('/login')

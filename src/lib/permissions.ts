@@ -9,7 +9,7 @@ export function canManageContent(role: UserRole): boolean {
 }
 
 export function canViewDashboard(role: UserRole): boolean {
-    return true // All authenticated users can view dashboard
+    return role === 'SUPER_ADMIN' || role === 'ADMIN' || role === 'EDITOR'
 }
 
 export function canPublishStory(role: UserRole): boolean {

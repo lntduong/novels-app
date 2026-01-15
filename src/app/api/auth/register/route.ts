@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase/server'
 import { prisma } from '@/lib/prisma'
+import bcrypt from 'bcryptjs'
 
 export async function POST(request: Request) {
     try {
@@ -13,48 +13,36 @@ export async function POST(request: Request) {
             )
         }
 
-        const supabase = await createClient()
-
-        const { origin } = new URL(request.url)
-
-        // Sign up with Supabase
-        const { data, error } = await supabase.auth.signUp({
-            email,
-            password,
-            options: {
-                emailRedirectTo: `${origin}/auth/callback`,
-            },
+        // Check if user exists
+        const existingUser = await prisma.user.findUnique({
+            where: { email }
         })
 
-        if (error) {
+        if (existingUser) {
             return NextResponse.json(
-                { error: error.message },
+                { error: 'User already exists' },
                 { status: 400 }
             )
         }
 
-        if (data.user) {
-            // Check if user exists in Prisma (shouldn't if new, but check ID)
-            const existingUser = await prisma.user.findUnique({
-                where: { id: data.user.id }
-            })
+        // Hash password
+        const hashedPassword = await bcrypt.hash(password, 10)
 
-            if (!existingUser) {
-                // Create user in Prisma
-                await prisma.user.create({
-                    data: {
-                        id: data.user.id,
-                        email: email,
-                        role: 'VIEWER' // Default role
-                    }
-                })
+        // Create user
+        const user = await prisma.user.create({
+            data: {
+                email,
+                password: hashedPassword,
+                role: 'VIEWER'
             }
-        }
+        })
+
+        // Remove password from response
+        const { password: _, ...userWithoutPassword } = user
 
         return NextResponse.json({
             success: true,
-            user: data.user,
-            requireConfirmation: !data.session
+            user: userWithoutPassword,
         })
 
     } catch (error) {

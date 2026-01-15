@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { createClient } from '@/lib/supabase/server'
+import { auth } from '@/auth'
 
 export async function DELETE(
     request: Request,
@@ -10,8 +10,8 @@ export async function DELETE(
         const { id: commentId } = await params
 
         // Check authentication
-        const supabase = await createClient()
-        const { data: { user } } = await supabase.auth.getUser()
+        const session = await auth()
+        const user = session?.user
 
         if (!user) {
             return NextResponse.json(

@@ -3,11 +3,13 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import { useFormState, useFormStatus } from 'react-dom'
+import { authenticate } from '@/lib/actions'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { createClient } from '@/lib/supabase/client'
+
 import { useTranslation } from '@/components/providers/language-provider'
 import { ThemeToggle } from '@/components/theme-toggle'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
@@ -16,38 +18,8 @@ import { Globe } from 'lucide-react'
 export default function LoginPage() {
     const router = useRouter()
     const { t, language, setLanguage } = useTranslation()
-    const [email, setEmail] = useState('')
-    const [password, setPassword] = useState('')
-    const [error, setError] = useState('')
     const [loading, setLoading] = useState(false)
-
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault()
-        setError('')
-        setLoading(true)
-
-        try {
-            const res = await fetch('/api/auth/login', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, password }),
-            })
-
-            if (!res.ok) {
-                const data = await res.json()
-                throw new Error(data.error || 'Login failed')
-            }
-
-            // Force refresh to update auth state
-            router.refresh()
-            // Redirect to home or previous page
-            router.push('/')
-        } catch (err) {
-            setError(err instanceof Error ? err.message : 'An error occurred')
-        } finally {
-            setLoading(false)
-        }
-    }
+    const [errorMessage, dispatch] = useFormState(authenticate, undefined)
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-orange-50 to-orange-100 dark:from-gray-900 dark:to-gray-800 p-4 relative">
@@ -79,17 +51,15 @@ export default function LoginPage() {
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
-                    <form onSubmit={handleSubmit} className="space-y-4">
+                    <form action={dispatch} className="space-y-4">
                         <div className="space-y-2">
                             <Label htmlFor="email">{t('auth.login.email_label')}</Label>
                             <Input
                                 id="email"
                                 type="email"
+                                name="email"
                                 placeholder="name@example.com"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
                                 required
-                                disabled={loading}
                             />
                         </div>
                         <div className="space-y-2">
@@ -97,20 +67,16 @@ export default function LoginPage() {
                             <Input
                                 id="password"
                                 type="password"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
+                                name="password"
                                 required
-                                disabled={loading}
                             />
                         </div>
-                        {error && (
+                        {errorMessage && (
                             <div className="text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 p-3 rounded-md">
-                                {error}
+                                {errorMessage}
                             </div>
                         )}
-                        <Button type="submit" className="w-full" disabled={loading}>
-                            {loading ? t('auth.login.loading') : t('auth.login.button')}
-                        </Button>
+                        <LoginButton t={t} />
 
                         <div className="text-center text-sm text-gray-600 dark:text-gray-400 mt-4">
                             {t('auth.login.no_account')} <Link href="/register" className="text-primary hover:underline font-medium">{t('auth.login.register_link')}</Link>
@@ -119,5 +85,14 @@ export default function LoginPage() {
                 </CardContent>
             </Card>
         </div>
+    )
+}
+
+function LoginButton({ t }: { t: any }) {
+    const { pending } = useFormStatus()
+    return (
+        <Button type="submit" className="w-full" disabled={pending}>
+            {pending ? t('auth.login.loading') : t('auth.login.button')}
+        </Button>
     )
 }

@@ -1,22 +1,20 @@
 
 import { NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { createClient } from '@/lib/supabase/server'
+import { auth } from '@/auth'
 
 // GET /api/user/history - List reading history
 export async function GET(request: Request) {
     try {
-        const supabase = await createClient()
-        const { data: { user } } = await supabase.auth.getUser()
-
-        if (!user) {
+        const session = await auth()
+        if (!session?.user) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
         }
 
         const { searchParams } = new URL(request.url)
         const storyId = searchParams.get('storyId')
 
-        const where: any = { userId: user.id }
+        const where: any = { userId: session.user.id }
         if (storyId) {
             where.storyId = storyId
         }
@@ -61,10 +59,8 @@ export async function GET(request: Request) {
 // POST /api/user/history - Update reading progress
 export async function POST(request: Request) {
     try {
-        const supabase = await createClient()
-        const { data: { user } } = await supabase.auth.getUser()
-
-        if (!user) {
+        const session = await auth()
+        if (!session?.user) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
         }
 
@@ -77,7 +73,7 @@ export async function POST(request: Request) {
         const history = await prisma.readingHistory.upsert({
             where: {
                 userId_storyId: {
-                    userId: user.id,
+                    userId: session.user.id,
                     storyId
                 }
             },
@@ -86,7 +82,7 @@ export async function POST(request: Request) {
                 updatedAt: new Date()
             },
             create: {
-                userId: user.id,
+                userId: session.user.id,
                 storyId,
                 chapterId
             }

@@ -1,24 +1,10 @@
 import 'dotenv/config'
-import { createClient } from '@supabase/supabase-js'
+import bcrypt from 'bcryptjs'
 import { prisma } from '../src/lib/prisma'
 
 async function main() {
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-    const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY
     const defaultAdminEmail = process.env.DEFAULT_ADMIN_EMAIL || 'admin@example.com'
     const defaultAdminPassword = process.env.DEFAULT_ADMIN_PASSWORD || 'ChangeThisPassword123!'
-
-    if (!supabaseUrl || !supabaseServiceRoleKey) {
-        throw new Error('Missing Supabase environment variables')
-    }
-
-    // Create Supabase admin client
-    const supabaseAdmin = createClient(supabaseUrl, supabaseServiceRoleKey, {
-        auth: {
-            autoRefreshToken: false,
-            persistSession: false,
-        },
-    })
 
     console.log('🌱 Starting seed...')
 
@@ -30,22 +16,14 @@ async function main() {
     if (existingUser) {
         console.log('✅ Super admin already exists:', defaultAdminEmail)
     } else {
-        // Create super admin in Supabase Auth
-        const { data: authData, error: authError } = await supabaseAdmin.auth.admin.createUser({
-            email: defaultAdminEmail,
-            password: defaultAdminPassword,
-            email_confirm: true,
-        })
-
-        if (authError || !authData.user) {
-            throw new Error(`Failed to create auth user: ${authError?.message}`)
-        }
+        // Hash password
+        const hashedPassword = await bcrypt.hash(defaultAdminPassword, 10)
 
         // Create super admin in database
         const superAdmin = await prisma.user.create({
             data: {
-                id: authData.user.id,
                 email: defaultAdminEmail,
+                password: hashedPassword, // Store hashed password
                 role: 'SUPER_ADMIN',
             },
         })
