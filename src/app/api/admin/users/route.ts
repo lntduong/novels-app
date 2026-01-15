@@ -15,7 +15,7 @@ export async function GET() {
             where: { id: session.user.id },
         })
 
-        if (!dbUser || dbUser.role !== 'SUPER_ADMIN') {
+        if (!dbUser || !['SUPER_ADMIN', 'ADMIN'].includes(dbUser.role)) {
             return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
         }
 
@@ -53,28 +53,33 @@ export async function POST(request: Request) {
             where: { id: session.user.id },
         })
 
-        if (!dbUser || dbUser.role !== 'SUPER_ADMIN') {
+        if (!dbUser || !['SUPER_ADMIN', 'ADMIN'].includes(dbUser.role)) {
             return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
         }
 
         const body = await request.json()
-        const { email, password, role } = body
+        const { email, username, nickname, birthDate, password, role } = body
 
-        if (!email || !password || !role) {
+        if (!email || !password || !role || !username) {
             return NextResponse.json(
-                { error: 'Email, password, and role are required' },
+                { error: 'Email, username, password, and role are required' },
                 { status: 400 }
             )
         }
 
-        // Check if user exists
-        const existingUser = await prisma.user.findUnique({
-            where: { email }
+        // Check if user exists (email or username)
+        const existingUser = await prisma.user.findFirst({
+            where: {
+                OR: [
+                    { email },
+                    { username }
+                ]
+            }
         })
 
         if (existingUser) {
             return NextResponse.json(
-                { error: 'User already exists' },
+                { error: 'User with this email or username already exists' },
                 { status: 400 }
             )
         }
@@ -85,6 +90,9 @@ export async function POST(request: Request) {
         const newUser = await prisma.user.create({
             data: {
                 email,
+                username,
+                nickname,
+                birthDate: birthDate ? new Date(birthDate) : null,
                 password: hashedPassword,
                 role,
             },

@@ -3,6 +3,7 @@
         "dashboard": "Dashboard",
         "stories": "Stories",
         "users": "Users",
+        "profile": "My Profile",
         "actions": "Actions",
         "cancel": "Cancel",
         "save": "Save",
@@ -17,7 +18,17 @@
         "status": "Status",
         "password": "Password",
         "email": "Email",
+        "username": "Username",
+        "nickname": "Nickname",
+        "birthDate": "Date of Birth",
         "logout": "Logout"
+    },
+    "profile": {
+        "title": "My Profile",
+        "subtitle": "Manage your account settings",
+        "change_avatar": "Change Avatar",
+        "nickname": "Nickname",
+        "birth_date": "Date of Birth"
     },
     "admin": {
         "welcome": "Welcome back! Here's an overview of your platform.",
@@ -32,6 +43,7 @@
             "subtitle": "Manage platform users and permissions",
             "create_button": "Create User",
             "create_dialog_title": "Create New User",
+            "edit_dialog_title": "Edit User",
             "create_dialog_desc": "Add a new user to the platform. They will receive login credentials.",
             "table": {
                 "user": "User",

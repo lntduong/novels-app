@@ -1,8 +1,9 @@
 import { NextResponse } from 'next/server'
 import { auth } from '@/auth'
 import { prisma } from '@/lib/prisma'
+import bcrypt from 'bcryptjs'
 
-// PATCH /api/admin/users/[id] - Update user role
+// PATCH /api/admin/users/[id] - Update user details
 export async function PATCH(
     request: Request,
     { params }: { params: Promise<{ id: string }> }
@@ -23,21 +24,39 @@ export async function PATCH(
         }
 
         const body = await request.json()
-        const { role } = body
+        const { role, nickname, username, birthDate, password } = body
 
-        if (!role) {
-            return NextResponse.json(
-                { error: 'Role is required' },
-                { status: 400 }
-            )
+        const updateData: any = {}
+        if (role) updateData.role = role
+        if (nickname !== undefined) updateData.nickname = nickname
+        if (birthDate !== undefined) updateData.birthDate = birthDate ? new Date(birthDate) : null
+
+        if (username) {
+            // Check uniqueness if username is changing
+            const existingUser = await prisma.user.findUnique({
+                where: { username }
+            })
+            if (existingUser && existingUser.id !== id) {
+                return NextResponse.json(
+                    { error: 'Username already taken' },
+                    { status: 400 }
+                )
+            }
+            updateData.username = username
+        }
+
+        if (password) {
+            const hashedPassword = await bcrypt.hash(password, 10)
+            updateData.password = hashedPassword
         }
 
         const updatedUser = await prisma.user.update({
             where: { id },
-            data: { role },
+            data: updateData,
         })
 
-        return NextResponse.json({ user: updatedUser })
+        const { password: _, ...userWithoutPassword } = updatedUser
+        return NextResponse.json({ user: userWithoutPassword })
     } catch (error) {
         console.error('Error updating user:', error)
         return NextResponse.json(

@@ -27,7 +27,11 @@ enum StoryStatus {
 model User {
   id        String   @id @default(uuid())
   email     String   @unique
+  username  String?  @unique // Optional initially to support existing users, can be made required later or migrated
   password  String?  // Hashed password for NextAuth
+  nickname  String?
+  avatar    String?
+  birthDate DateTime?
   role      UserRole @default(VIEWER)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

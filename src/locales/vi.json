@@ -3,6 +3,7 @@
         "dashboard": "Bảng điều khiển",
         "stories": "Truyện",
         "users": "Người dùng",
+        "profile": "Hồ sơ của tôi",
         "actions": "Thao tác",
         "cancel": "Hủy",
         "save": "Lưu",
@@ -17,7 +18,17 @@
         "status": "Trạng thái",
         "password": "Mật khẩu",
         "email": "Email",
+        "username": "Tên đăng nhập",
+        "nickname": "Biệt danh",
+        "birthDate": "Ngày sinh",
         "logout": "Đăng xuất"
+    },
+    "profile": {
+        "title": "Hồ sơ của tôi",
+        "subtitle": "Quản lý thông tin tài khoản",
+        "change_avatar": "Đổi ảnh đại diện",
+        "nickname": "Biệt danh",
+        "birth_date": "Ngày sinh"
     },
     "admin": {
         "welcome": "Chào mừng trở lại! Đây là tổng quan về nền tảng của bạn.",
@@ -31,7 +42,9 @@
             "title": "Quản lý Người dùng",
             "subtitle": "Quản lý người dùng và phân quyền",
             "create_button": "Thêm người dùng",
+            "create_button": "Thêm người dùng",
             "create_dialog_title": "Thêm người dùng mới",
+            "edit_dialog_title": "Chỉnh sửa tài khoản",
             "create_dialog_desc": "Thêm người dùng mới vào hệ thống. Họ sẽ nhận được thông tin đăng nhập.",
             "role": "Vai trò",
             "password_placeholder": "Tối thiểu 6 ký tự",

@@ -22,10 +22,10 @@ export async function POST(request: Request) {
             )
         }
 
-        // Validate file size (5MB)
-        if (file.size > 5 * 1024 * 1024) {
+        // Validate file size (20MB)
+        if (file.size > 20 * 1024 * 1024) {
             return NextResponse.json(
-                { error: 'File size must be less than 5MB' },
+                { error: 'File size must be less than 20MB' },
                 { status: 400 }
             )
         }
@@ -41,10 +41,13 @@ export async function POST(request: Request) {
         // Generate unique filename
         const fileExt = file.name.split('.').pop()
         const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`
-        const filePath = `${fileName}` // Using simplified path for bucket root
+        const filePath = `${fileName}`
+
+        // Get bucket from form data or default to 'avatars'
+        const bucket = formData.get('bucket') as string || 'avatars'
 
         // Upload to S3 (MinIO)
-        const publicUrl = await StorageService.uploadFile(file, filePath)
+        const publicUrl = await StorageService.uploadFile(file, filePath, bucket)
 
         if (!publicUrl) {
             return NextResponse.json(

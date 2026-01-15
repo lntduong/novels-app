@@ -1,4 +1,5 @@
 import { prisma } from '@/lib/prisma'
+import { auth } from '@/auth'
 import HomeClientPage from '@/components/public/home-client-page'
 
 export const dynamic = 'force-dynamic'
@@ -25,12 +26,15 @@ export default async function HomePage() {
     const totalStories = stories.length
     const totalChapters = stories.reduce((acc, s) => acc + s._count.chapters, 0)
 
+    const session = await auth()
+
     return (
         <HomeClientPage
             stories={stories}
             totalReads={totalReads}
             totalStories={totalStories}
             totalChapters={totalChapters}
+            user={session?.user}
         />
     )
 }

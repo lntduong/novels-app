@@ -2,11 +2,12 @@
 
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
-import { BookOpen, TrendingUp, Clock, Globe } from 'lucide-react'
+import { BookOpen, TrendingUp, Clock, Globe, User as UserIcon, LogOut, Settings } from 'lucide-react'
 import SearchBar from '@/components/search-bar'
 import { useTranslation } from '@/components/providers/language-provider'
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from '@/components/ui/dropdown-menu'
 import { ThemeToggle } from '@/components/theme-toggle'
+import { signOut } from 'next-auth/react'
 
 interface StoryWithCount {
     id: string
@@ -27,9 +28,10 @@ interface HomeClientPageProps {
     totalReads: number
     totalStories: number
     totalChapters: number
+    user?: any
 }
 
-export default function HomeClientPage({ stories, totalReads, totalStories, totalChapters }: HomeClientPageProps) {
+export default function HomeClientPage({ stories, totalReads, totalStories, totalChapters, user }: HomeClientPageProps) {
     const { t, language, setLanguage } = useTranslation()
 
     return (
@@ -47,7 +49,7 @@ export default function HomeClientPage({ stories, totalReads, totalStories, tota
                     <ThemeToggle />
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" size="icon" className="rounded-full bg-white/50 dark:bg-black/50 backdrop-blur-sm">
+                            <Button variant="ghost" size="icon" className="rounded-full bg-white/50 dark:bg-black/50 backdrop-blur-sm" title="Language">
                                 <Globe className="h-5 w-5" />
                             </Button>
                         </DropdownMenuTrigger>
@@ -60,6 +62,51 @@ export default function HomeClientPage({ stories, totalReads, totalStories, tota
                             </DropdownMenuItem>
                         </DropdownMenuContent>
                     </DropdownMenu>
+
+                    {user ? (
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <Button variant="ghost" size="icon" className="rounded-full bg-white/50 dark:bg-black/50 backdrop-blur-sm" title="User Menu">
+                                    {user.image ? (
+                                        <img src={user.image} alt="User" className="w-5 h-5 rounded-full" />
+                                    ) : (
+                                        <UserIcon className="h-5 w-5" />
+                                    )}
+                                </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                                <DropdownMenuItem className="font-semibold" disabled>
+                                    {user.email}
+                                </DropdownMenuItem>
+                                <DropdownMenuSeparator />
+                                <Link href="/profile">
+                                    <DropdownMenuItem>
+                                        <UserIcon className="w-4 h-4 mr-2" />
+                                        {t('common.profile') || 'Profile'}
+                                    </DropdownMenuItem>
+                                </Link>
+                                {user.role === 'SUPER_ADMIN' || user.role === 'ADMIN' ? (
+                                    <Link href="/admin">
+                                        <DropdownMenuItem>
+                                            <Settings className="w-4 h-4 mr-2" />
+                                            {t('common.dashboard')}
+                                        </DropdownMenuItem>
+                                    </Link>
+                                ) : null}
+                                <DropdownMenuSeparator />
+                                <DropdownMenuItem onClick={() => signOut()} className="text-red-600 dark:text-red-400">
+                                    <LogOut className="w-4 h-4 mr-2" />
+                                    {t('common.logout')}
+                                </DropdownMenuItem>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
+                    ) : (
+                        <Link href="/login">
+                            <Button size="sm" className="rounded-full">
+                                {t('auth.login.button')}
+                            </Button>
+                        </Link>
+                    )}
                 </div>
 
                 <div className="max-w-7xl mx-auto px-4 py-16 sm:py-24">

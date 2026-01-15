@@ -16,6 +16,7 @@ export default function RegisterPage() {
     const router = useRouter()
     const { t, language, setLanguage } = useTranslation()
     const [email, setEmail] = useState('')
+    const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
     const [error, setError] = useState('')
     const [success, setSuccess] = useState('')
@@ -31,7 +32,7 @@ export default function RegisterPage() {
             const res = await fetch('/api/auth/register', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, password }),
+                body: JSON.stringify({ email, username, password }),
             })
 
             if (!res.ok) {
@@ -97,6 +98,19 @@ export default function RegisterPage() {
                                 onChange={(e) => setEmail(e.target.value)}
                                 required
                                 disabled={loading}
+                            />
+                        </div>
+                        <div className="space-y-2">
+                            <Label htmlFor="username">{t('common.username') || 'Username'}</Label>
+                            <Input
+                                id="username"
+                                type="text"
+                                placeholder="username"
+                                value={username}
+                                onChange={(e) => setUsername(e.target.value)}
+                                required
+                                disabled={loading}
+                                minLength={3}
                             />
                         </div>
                         <div className="space-y-2">

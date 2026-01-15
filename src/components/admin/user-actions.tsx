@@ -20,17 +20,22 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
 } from '@/components/ui/alert-dialog'
-import { MoreVertical, Trash2 } from 'lucide-react'
+import { MoreVertical, Trash2, Edit } from 'lucide-react'
+import EditUserDialog from '@/components/admin/edit-user-dialog'
 
 interface User {
     id: string
     email: string
     role: string
+    username?: string | null
+    nickname?: string | null
+    birthDate?: string | Date | null
 }
 
 export default function UserActions({ user, currentUserId }: { user: User; currentUserId: string }) {
     const router = useRouter()
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
+    const [editDialogOpen, setEditDialogOpen] = useState(false)
     const [deleting, setDeleting] = useState(false)
 
     const handleDelete = async () => {
@@ -71,6 +76,12 @@ export default function UserActions({ user, currentUserId }: { user: User; curre
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
                     <DropdownMenuItem
+                        onClick={() => setEditDialogOpen(true)}
+                    >
+                        <Edit className="h-4 w-4 mr-2" />
+                        {t('common.edit')}
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
                         onClick={() => setDeleteDialogOpen(true)}
                         disabled={isCurrentUser}
                         className="text-red-600 dark:text-red-400"
@@ -80,6 +91,12 @@ export default function UserActions({ user, currentUserId }: { user: User; curre
                     </DropdownMenuItem>
                 </DropdownMenuContent>
             </DropdownMenu>
+
+            <EditUserDialog
+                user={user}
+                open={editDialogOpen}
+                onOpenChange={setEditDialogOpen}
+            />
 
             <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
                 <AlertDialogContent>

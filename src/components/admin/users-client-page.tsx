@@ -4,12 +4,16 @@ import { Users } from 'lucide-react'
 import CreateUserDialog from '@/components/admin/create-user-dialog'
 import UserActions from '@/components/admin/user-actions'
 import { useTranslation } from '@/components/providers/language-provider'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 
 interface User {
     id: string
     email: string
     role: string
     createdAt: string | Date
+    avatar: string | null
+    username: string | null
+    nickname: string | null
 }
 
 interface UsersClientPageProps {
@@ -59,11 +63,17 @@ export default function UsersClientPage({ users, currentUser }: UsersClientPageP
                                 <tr key={userItem.id} className="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
                                     <td className="px-6 py-4 whitespace-nowrap">
                                         <div className="flex items-center">
-                                            <div className="flex-shrink-0 h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
-                                                <Users className="h-5 w-5 text-primary" />
-                                            </div>
+                                            <Avatar className="h-10 w-10">
+                                                <AvatarImage src={userItem.avatar || ''} alt={userItem.username || userItem.email} />
+                                                <AvatarFallback className="bg-primary/10 text-primary">
+                                                    {userItem.nickname?.[0]?.toUpperCase() || userItem.username?.[0]?.toUpperCase() || userItem.email[0].toUpperCase()}
+                                                </AvatarFallback>
+                                            </Avatar>
                                             <div className="ml-4">
                                                 <div className="text-sm font-medium text-gray-900 dark:text-white">
+                                                    {userItem.nickname || userItem.username || userItem.email.split('@')[0]}
+                                                </div>
+                                                <div className="text-xs text-gray-500 dark:text-gray-400">
                                                     {userItem.email}
                                                 </div>
                                             </div>
