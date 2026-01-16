@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Upload, FileText } from 'lucide-react'
 import { useTranslation } from '@/components/providers/language-provider'
+import { useRouter } from 'next/navigation'
 
 interface ParsedChapter {
     title: string
@@ -19,6 +20,7 @@ interface WordUploadProps {
 
 export default function WordUpload({ storyId, onImportComplete }: WordUploadProps) {
     const { t } = useTranslation()
+    const router = useRouter()
     const [uploading, setUploading] = useState(false)
     const [saving, setSaving] = useState(false)
     const [chapters, setChapters] = useState<ParsedChapter[]>([])
@@ -86,6 +88,7 @@ export default function WordUpload({ storyId, onImportComplete }: WordUploadProp
                 onImportComplete(chapters)
             }
             setChapters([]) // Clear chapters after saving
+            router.refresh() // Refresh the page to update the chapters list
         } catch (err) {
             // Handle error, maybe display a toast or message
             console.error("Chapter saving error:", err);
