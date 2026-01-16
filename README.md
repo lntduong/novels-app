@@ -28,6 +28,7 @@ Whether you are deploying a personal library on your NAS or building a community
 *   **Interactivity**: Rate chapters, leave comments, and track view counts.
 *   **Accessibility**: Native dark/light mode support and responsive mobile design.
 *   **Security**: Two-Factor Recovery Codes for secure account recovery.
+*   **Privacy-First Analytics**: No third-party trackers. Built-in anonymous page view and visitor tracking.
 
 ### 🛡️ For Admins & Creators
 *   **Full Data Sovereignty**: Self-hosted Auth (NextAuth), Database (Postgres), and Storage (MinIO).
@@ -61,8 +62,8 @@ graph TD
 ```
 
 ### Tech Stack
-*   **Frontend**: Next.js 14 (App Router), Tailwind CSS, Shadcn UI.
-*   **Backend**: Next.js Server Actions, NextAuth.js (v5).
+*   **Frontend**: Next.js 14 (App Router), Tailwind CSS, Shadcn UI, Recharts.
+*   **Backend**: Next.js Server Actions, NextAuth.js (v5), GeoIP-lite.
 *   **Database**: PostgreSQL (via Prisma ORM).
 *   **Storage**: MinIO (S3 Compatible Object Storage).
 *   **Infrastructure**: Docker Compose, Cloudflare Tunnel.
@@ -194,7 +195,7 @@ Please make sure to run `npm run lint` before committing.
 - [x] **Self-Hosting**: Full Docker support with MinIO & NextAuth.
 - [x] **Localization**: English & Vietnamese support.
 - [x] **Security**: Two-Factor Recovery Codes & Safe Password Reset.
-- [ ] **Advanced Analytics**: Detailed readership stats for authors.
+- [x] **Web Analytics**: Integrated Traffic Charts, Visitor Map, and Real-time tracking.
 - [ ] **Mobile App**: Native companion app using React Native.
 - [ ] **Monetization**: Unlockable chapters and subscription models.
 
