@@ -51,17 +51,41 @@ else {
 # --- 2. DEPLOYMENT ---
 Write-Host "Starting Deployment..." -ForegroundColor Yellow
 
+# Create Tarball (Excluding node_modules, .next, .git, builds, etc.)
+Write-Host "Creating deployment package (deploy.tar.gz)..." -ForegroundColor Yellow
+$ExcludeList = @("node_modules", ".next", ".git", ".vscode", "coverage", "deploy.tar.gz")
+$ExcludeArgs = @()
+foreach ($item in $ExcludeList) {
+    $ExcludeArgs += "--exclude"
+    $ExcludeArgs += $item
+}
+
+# Using bsttar included in Windows (tar.exe)
+tar $ExcludeArgs -czf deploy.tar.gz .
+
+if (-not (Test-Path "deploy.tar.gz")) {
+    Write-Host "Failed to create deploy.tar.gz" -ForegroundColor Red
+    exit 1
+}
+
 # Copy Files
-Write-Host "Copying files to $NAS_IP..." -ForegroundColor Yellow
-scp -O -r src public prisma package.json next.config.ts Dockerfile docker-compose.yml .env "$NAS_USER@$NAS_IP`:$NAS_PATH"
+Write-Host "Copying deployment package to $NAS_IP..." -ForegroundColor Yellow
+# Copy tarball and .env file
+scp -O deploy.tar.gz .env "$NAS_USER@$NAS_IP`:$NAS_PATH"
 
 if ($LASTEXITCODE -eq 0) {
     Write-Host "Copy successful!" -ForegroundColor Green
     
-    Write-Host "Building & Restarting Docker..." -ForegroundColor Yellow
+    # Clean up local tarball
+    Remove-Item deploy.tar.gz -ErrorAction SilentlyContinue
+    
+    Write-Host "Extracting & Building on NAS..." -ForegroundColor Yellow
     
     # Build & Deploy Command
-    $BuildCmd = "cd $NAS_PATH && sudo -S -p '' sh -c 'rm -rf src/lib/supabase src/app/api/auth/login src/app/api/auth/logout src/app/auth prisma/fix-admin.ts && /usr/local/bin/docker compose up -d --build && echo Waiting for DB... && sleep 10 && /usr/local/bin/docker exec novels-web npx --yes prisma@5.22.0 db push --accept-data-loss --skip-generate'"
+    # 1. Extract tarball
+    # 2. Clean problematic folders AND conflicting icons
+    # 3. Docker rebuild
+    $BuildCmd = "cd $NAS_PATH && tar -xzf deploy.tar.gz && rm deploy.tar.gz && sudo -S -p '' sh -c 'rm -rf src/lib/supabase src/app/api/auth/login src/app/api/auth/logout src/app/auth prisma/fix-admin.ts public/vercel.svg public/next.svg public/favicon.ico src/app/favicon.ico && /usr/local/bin/docker compose up -d --build && echo Waiting for DB... && sleep 10 && /usr/local/bin/docker exec novels-web npx --yes prisma@5.22.0 db push --accept-data-loss --skip-generate'"
     
     # Execute with captured password for SUDO
     $NAS_PASSWORD_PLAIN | ssh "$NAS_USER@$NAS_IP" $BuildCmd
