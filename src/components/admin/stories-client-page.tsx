@@ -47,7 +47,7 @@ export default function StoriesClientPage({ stories }: StoriesClientPageProps) {
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 {stories.map((story) => (
-                    <Card key={story.id} className="group hover:shadow-xl transition-all duration-300 overflow-hidden border-gray-200 dark:border-gray-700 flex flex-col h-full bg-white dark:bg-gray-800">
+                    <Card key={story.id} className="group hover:shadow-xl transition-all duration-300 overflow-hidden border-gray-200 dark:border-gray-700 flex flex-col h-full bg-white dark:bg-gray-800 p-0 gap-0">
                         {/* Cinema Style Cover - Blur Background + Contained Image */}
                         <div className="relative aspect-[16/9] w-full overflow-hidden bg-gray-100 dark:bg-gray-900 group-hover:opacity-100 transition-opacity">
                             {story.coverImage ? (
@@ -60,12 +60,12 @@ export default function StoriesClientPage({ stories }: StoriesClientPageProps) {
                                     {/* Glass Overlay for better contrast */}
                                     <div className="absolute inset-0 bg-black/5 dark:bg-black/20" />
 
-                                    {/* Main Image - Contained & Centered */}
-                                    <div className="relative z-10 w-full h-full p-3 flex items-center justify-center">
+                                    {/* Main Image - Contained & Centered - NO PADDING as requested */}
+                                    <div className="relative z-10 w-full h-full flex items-center justify-center">
                                         <img
                                             src={story.coverImage}
                                             alt={story.title}
-                                            className="h-full object-contain rounded shadow-lg transform transition-transform duration-500 group-hover:scale-105"
+                                            className="h-full object-contain shadow-lg transform transition-transform duration-500 group-hover:scale-105"
                                         />
                                     </div>
                                 </>
