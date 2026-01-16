@@ -44,25 +44,29 @@
 }
 
 .dark {
-  /* Background & Surfaces - Dark blue-gray like Wattpad */
-  --background: 222 47% 11%;
-  /* #111827 */
+  /* Background & Surfaces - Deep Charcoal / Navy */
+  --background: 220 13% 11%;
+  /* #111827 - Gray 900 */
   --foreground: 0 0% 98%;
-  --card: 217 33% 17%;
-  /* #1F2937 */
+
+  --card: 215 28% 17%;
+  /* #1F2937 - Gray 800 */
   --card-foreground: 0 0% 98%;
 
   /* Interactive Elements */
-  --popover: 217 33% 17%;
+  --popover: 215 28% 17%;
   --popover-foreground: 0 0% 98%;
+
   --primary: 25 95% 53%;
-  /* Keep orange */
   --primary-foreground: 0 0% 100%;
-  --secondary: 217 33% 25%;
+
+  --secondary: 215 28% 25%;
   --secondary-foreground: 0 0% 98%;
-  --muted: 217 33% 25%;
-  --muted-foreground: 0 0% 64%;
-  --accent: 217 33% 25%;
+
+  --muted: 215 28% 25%;
+  --muted-foreground: 215 20% 65%;
+
+  --accent: 215 28% 25%;
   --accent-foreground: 0 0% 98%;
 
   /* Semantic Colors */
@@ -70,8 +74,8 @@
   --destructive-foreground: 0 0% 98%;
 
   /* Borders & Inputs */
-  --border: 217 33% 25%;
-  --input: 217 33% 25%;
+  --border: 215 28% 25%;
+  --input: 215 28% 25%;
   --ring: 25 95% 53%;
 }
 
@@ -124,8 +128,10 @@
 @layer components {
 
   /* Fix select dropdown transparency */
-  [data-radix-popper-content-wrapper] {
-    z-index: 50 !important;
+  [data-radix-popper-content-wrapper],
+  [data-slot="dialog-overlay"],
+  [data-slot="dialog-content"] {
+    z-index: 100 !important;
   }
 
   [role="listbox"],
@@ -134,8 +140,8 @@
     border: 1px solid hsl(var(--border));
   }
 
-  /* Button base styles - exclude Radix UI components */
-  button:not([role="tab"]):not([role="switch"]):not([role="combobox"]):not([data-radix-collection-item]) {
+  /* Button base styles - exclude Radix UI components and shadcn variants */
+  button:not([role="tab"]):not([role="switch"]):not([role="combobox"]):not([data-radix-collection-item]):not([data-variant]) {
     background-color: hsl(var(--primary));
     color: hsl(var(--primary-foreground));
     padding: 0.5rem 1rem;

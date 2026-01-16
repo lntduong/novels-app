@@ -7,6 +7,7 @@
         "actions": "Actions",
         "cancel": "Cancel",
         "save": "Save",
+        "regenerate_suffix": "(Regenerate)",
         "saving": "Saving...",
         "delete": "Delete",
         "deleting": "Deleting...",
@@ -21,14 +22,16 @@
         "username": "Username",
         "nickname": "Nickname",
         "birthDate": "Date of Birth",
-        "logout": "Logout"
+        "logout": "Logout",
+        "slogan": "Explore the world of novels"
     },
     "profile": {
         "title": "My Profile",
         "subtitle": "Manage your account settings",
         "change_avatar": "Change Avatar",
         "nickname": "Nickname",
-        "birth_date": "Date of Birth"
+        "birth_date": "Date of Birth",
+        "security_settings": "Security Settings"
     },
     "admin": {
         "welcome": "Welcome back! Here's an overview of your platform.",
@@ -202,7 +205,9 @@
             "button": "Login",
             "loading": "Logging in...",
             "no_account": "Don't have an account?",
-            "register_link": "Register"
+            "register_link": "Register",
+            "forgot_password": "Forgot password?",
+            "or": "Or"
         },
         "register": {
             "title": "Register",
@@ -217,6 +222,42 @@
             "error_exists": "User already exists",
             "error_generic": "Registration failed",
             "check_email": "Registration successful! Please check your email to verify your account."
+        }
+    },
+    "security": {
+        "title": "Security Settings",
+        "subtitle": "Manage your account security and recovery options.",
+        "recovery_codes": {
+            "title": "Two-Factor Recovery Codes",
+            "description": "Recovery codes can be used to access your account if you lose your password.\nKeep these codes safe. They are the only way to restore access to your account.",
+            "no_codes_title": "No codes visible",
+            "no_codes_desc": "We cannot show existing codes for security reasons. Generate new ones if you lost them.",
+            "generate_btn": "Generate New Codes",
+            "generating": "Generating...",
+            "copy": "Copy Codes",
+            "copied": "Copied",
+            "download": "Download .txt",
+            "hide": "Hide Codes",
+            "important_title": "Important",
+            "important_desc": "These codes will only be shown once. Please save them immediately.",
+            "confirm_generate": "Generating new codes will invalidate any existing ones. Are you sure?"
+        }
+    },
+    "auth_extra": {
+        "forgot_password": {
+            "page_title": "Reset Password",
+            "page_subtitle": "Enter your email and a valid recovery code to reset your password.",
+            "email_label": "Email Address",
+            "code_label": "Recovery Code",
+            "code_placeholder": "XXXX-XXXX",
+            "code_help": "Format: 8-character code saved from your profile.",
+            "new_password_label": "New Password",
+            "confirm_password_label": "Confirm Password",
+            "submit_btn": "Reset Password",
+            "submitting": "Resetting...",
+            "success_message": "Password reset successfully! You can now login with your new password.",
+            "back_login": "Back to Login",
+            "return_login": "Return to Login"
         }
     }
 }

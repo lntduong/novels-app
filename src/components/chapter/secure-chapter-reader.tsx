@@ -61,7 +61,10 @@ export default function SecureChapterReader({
             className="prose prose-lg dark:prose-invert max-w-none mb-16 text-justify leading-relaxed"
             style={{
                 fontSize: 'var(--reading-font-size, 18px)',
-                fontFamily: 'var(--reading-font-family, "Be Vietnam Pro", sans-serif)'
+                fontFamily: 'var(--reading-font-family, "Be Vietnam Pro", sans-serif)',
+                lineHeight: 'var(--reading-line-height, 1.8)',
+                paddingLeft: 'var(--reading-margin-x, 0)',
+                paddingRight: 'var(--reading-margin-x, 0)',
             }}
             dangerouslySetInnerHTML={{ __html: content }}
         />

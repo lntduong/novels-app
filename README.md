@@ -27,6 +27,7 @@ Whether you are deploying a personal library on your NAS or building a community
 *   **Discovery**: Advanced search with genre filtering and popularity sorting.
 *   **Interactivity**: Rate chapters, leave comments, and track view counts.
 *   **Accessibility**: Native dark/light mode support and responsive mobile design.
+*   **Security**: Two-Factor Recovery Codes for secure account recovery.
 
 ### 🛡️ For Admins & Creators
 *   **Full Data Sovereignty**: Self-hosted Auth (NextAuth), Database (Postgres), and Storage (MinIO).
@@ -192,6 +193,7 @@ Please make sure to run `npm run lint` before committing.
 - [x] **Core Platform**: Reading, Writing, and User System.
 - [x] **Self-Hosting**: Full Docker support with MinIO & NextAuth.
 - [x] **Localization**: English & Vietnamese support.
+- [x] **Security**: Two-Factor Recovery Codes & Safe Password Reset.
 - [ ] **Advanced Analytics**: Detailed readership stats for authors.
 - [ ] **Mobile App**: Native companion app using React Native.
 - [ ] **Monetization**: Unlockable chapters and subscription models.

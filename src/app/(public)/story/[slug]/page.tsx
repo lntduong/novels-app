@@ -8,7 +8,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     const { slug } = await params
     const story = await prisma.story.findUnique({
         where: { slug },
-        select: { title: true, description: true }
+        select: { title: true, description: true, coverImage: true, authorName: true }
     })
 
     if (!story) {
@@ -17,9 +17,24 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
         }
     }
 
+    const images = story.coverImage ? [story.coverImage] : []
+
     return {
         title: story.title,
         description: story.description || undefined,
+        openGraph: {
+            title: story.title,
+            description: story.description || undefined,
+            type: 'book',
+            authors: story.authorName ? [story.authorName] : undefined,
+            images,
+        },
+        twitter: {
+            card: 'summary_large_image',
+            title: story.title,
+            description: story.description || undefined,
+            images,
+        },
     }
 }
 
@@ -57,5 +72,29 @@ export default async function StoryDetailPage({
         updatedAt: story.updatedAt.toISOString(),
     }
 
-    return <StoryClientPage story={serializedStory} />
+    // structured data
+    const jsonLd = {
+        '@context': 'https://schema.org',
+        '@type': 'Book',
+        name: story.title,
+        description: story.description,
+        author: {
+            '@type': 'Person',
+            name: story.authorName || 'Unknown',
+        },
+        image: story.coverImage,
+        datePublished: story.createdAt.toISOString(),
+        dateModified: story.updatedAt.toISOString(),
+        genre: story.genres.map(g => g.name),
+    }
+
+    return (
+        <>
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+            />
+            <StoryClientPage story={serializedStory} />
+        </>
+    )
 }

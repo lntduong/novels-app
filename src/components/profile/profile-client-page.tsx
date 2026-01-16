@@ -10,7 +10,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { updateProfile } from '@/lib/actions'
 import { useTranslation } from '@/components/providers/language-provider'
 import Link from 'next/link'
-import { Upload, ArrowLeft } from 'lucide-react'
+import { Upload, ArrowLeft, ShieldCheck } from 'lucide-react'
 
 // ... (interfaces)
 interface UserProfile {
@@ -110,6 +110,16 @@ export default function ProfileClientPage({ user }: { user: UserProfile }) {
                                     {uploading ? 'Uploading...' : (t('profile.change_avatar') || 'Change Avatar')}
                                 </Button>
                             </div>
+                        </div>
+
+                        {/* Security Section */}
+                        <div className="flex justify-center">
+                            <Button variant="outline" asChild>
+                                <Link href="/profile/security">
+                                    <ShieldCheck className="w-4 h-4 mr-2" />
+                                    {t('profile.security_settings') || 'Security Settings'}
+                                </Link>
+                            </Button>
                         </div>
 
                         <div className="grid gap-4">

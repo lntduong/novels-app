@@ -1,13 +1,8 @@
 'use client'
 
 import Link from 'next/link'
-import { Button } from '@/components/ui/button'
-import { BookOpen, TrendingUp, Clock, Globe, User as UserIcon, LogOut, Settings } from 'lucide-react'
-import SearchBar from '@/components/search-bar'
+import { BookOpen } from 'lucide-react'
 import { useTranslation } from '@/components/providers/language-provider'
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from '@/components/ui/dropdown-menu'
-import { ThemeToggle } from '@/components/theme-toggle'
-import { signOut } from 'next-auth/react'
 
 interface StoryWithCount {
     id: string
@@ -31,198 +26,74 @@ interface HomeClientPageProps {
     user?: any
 }
 
-export default function HomeClientPage({ stories, totalReads, totalStories, totalChapters, user }: HomeClientPageProps) {
-    const { t, language, setLanguage } = useTranslation()
+export default function HomeClientPage({ stories }: HomeClientPageProps) {
+    const { t } = useTranslation()
 
     return (
-        <div className="min-h-screen">
-            {/* Hero Section */}
-            <div className="bg-gradient-to-br from-orange-50 via-white to-orange-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 border-b border-orange-100 dark:border-gray-700 relative">
-
-                {/* Language Switcher - Absolute positioned for now as there is no public header */}
-                <div className="absolute top-4 right-4 z-10 flex items-center gap-2">
-                    <Link href="/library">
-                        <Button variant="ghost" size="icon" className="rounded-full bg-white/50 dark:bg-black/50 backdrop-blur-sm" title="My Library">
-                            <BookOpen className="h-5 w-5" />
-                        </Button>
-                    </Link>
-                    <ThemeToggle />
-                    <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" size="icon" className="rounded-full bg-white/50 dark:bg-black/50 backdrop-blur-sm" title="Language">
-                                <Globe className="h-5 w-5" />
-                            </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                            <DropdownMenuItem onClick={() => setLanguage('vi')} className={language === 'vi' ? 'bg-orange-50 dark:bg-gray-700' : ''}>
-                                Tiếng Việt
-                            </DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => setLanguage('en')} className={language === 'en' ? 'bg-orange-50 dark:bg-gray-700' : ''}>
-                                English
-                            </DropdownMenuItem>
-                        </DropdownMenuContent>
-                    </DropdownMenu>
-
-                    {user ? (
-                        <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                                <Button variant="ghost" size="icon" className="rounded-full bg-white/50 dark:bg-black/50 backdrop-blur-sm" title="User Menu">
-                                    {user.image ? (
-                                        <img src={user.image} alt="User" className="w-5 h-5 rounded-full" />
-                                    ) : (
-                                        <UserIcon className="h-5 w-5" />
-                                    )}
-                                </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end">
-                                <DropdownMenuItem className="font-semibold" disabled>
-                                    {user.email}
-                                </DropdownMenuItem>
-                                <DropdownMenuSeparator />
-                                <Link href="/profile">
-                                    <DropdownMenuItem>
-                                        <UserIcon className="w-4 h-4 mr-2" />
-                                        {t('common.profile') || 'Profile'}
-                                    </DropdownMenuItem>
-                                </Link>
-                                {user.role === 'SUPER_ADMIN' || user.role === 'ADMIN' ? (
-                                    <Link href="/admin">
-                                        <DropdownMenuItem>
-                                            <Settings className="w-4 h-4 mr-2" />
-                                            {t('common.dashboard')}
-                                        </DropdownMenuItem>
-                                    </Link>
-                                ) : null}
-                                <DropdownMenuSeparator />
-                                <DropdownMenuItem onClick={() => signOut()} className="text-red-600 dark:text-red-400">
-                                    <LogOut className="w-4 h-4 mr-2" />
-                                    {t('common.logout')}
-                                </DropdownMenuItem>
-                            </DropdownMenuContent>
-                        </DropdownMenu>
-                    ) : (
-                        <Link href="/login">
-                            <Button size="sm" className="rounded-full">
-                                {t('auth.login.button')}
-                            </Button>
-                        </Link>
-                    )}
-                </div>
-
-                <div className="max-w-7xl mx-auto px-4 py-16 sm:py-24">
-                    <div className="text-center">
-                        <h1 className="text-4xl sm:text-6xl font-bold text-gray-900 dark:text-white mb-6">
-                            {t('public.home.hero_title_1')}
-                            <span className="text-primary">{t('public.home.hero_title_2')}</span>
-                        </h1>
-                        <p className="text-lg sm:text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto mb-8">
-                            {t('public.home.hero_subtitle')}
-                        </p>
-                        <div className="mb-8">
-                            <SearchBar />
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            {/* Stats Section */}
-            <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
-                <div className="max-w-7xl mx-auto px-4 py-8">
-                    <div className="grid grid-cols-3 gap-4 text-center">
-                        <div>
-                            <div className="text-2xl sm:text-3xl font-bold text-primary">{totalStories}+</div>
-                            <div className="text-sm text-gray-600 dark:text-gray-400">{t('public.home.stats.stories')}</div>
-                        </div>
-                        <div>
-                            <div className="text-2xl sm:text-3xl font-bold text-primary">
-                                {totalChapters}+
-                            </div>
-                            <div className="text-sm text-gray-600 dark:text-gray-400">{t('public.home.stats.chapters')}</div>
-                        </div>
-                        <div>
-                            <div className="text-2xl sm:text-3xl font-bold text-primary">
-                                {totalReads >= 1000000 ? `${(totalReads / 1000000).toFixed(1)}M+` :
-                                    totalReads >= 1000 ? `${(totalReads / 1000).toFixed(1)}K+` :
-                                        totalReads}
-                            </div>
-                            <div className="text-sm text-gray-600 dark:text-gray-400">{t('public.home.stats.reads')}</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            {/* Stories Grid */}
-            <div className="max-w-7xl mx-auto px-4 py-12">
+        <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+            {/* Stories Grid - now the main focus */}
+            <div className="max-w-7xl mx-auto px-4 py-8">
                 {/* Section Header */}
-                <div className="flex items-center justify-between mb-8">
+                <div className="flex items-center justify-between mb-6">
                     <div>
-                        <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">
+                        <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                            <span className="bg-orange-500 w-1.5 h-8 rounded-full inline-block"></span>
                             {t('public.home.latest_updates')}
                         </h2>
-                        <p className="text-gray-600 dark:text-gray-400 mt-1">
+                        <p className="text-gray-600 dark:text-gray-400 mt-1 ml-3.5">
                             {t('public.home.latest_desc')}
                         </p>
                     </div>
-                    <Button variant="ghost" className="gap-2">
-                        {t('public.home.view_all')}
-                    </Button>
                 </div>
 
                 {/* Story Cards */}
                 {stories.length === 0 ? (
-                    <div className="text-center py-16">
+                    <div className="text-center py-16 bg-white dark:bg-gray-900 rounded-xl border border-dashed border-gray-300 dark:border-gray-800">
                         <BookOpen className="w-16 h-16 text-gray-300 dark:text-gray-600 mx-auto mb-4" />
                         <p className="text-gray-500 dark:text-gray-400">{t('public.home.no_stories')}</p>
                     </div>
                 ) : (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-6">
                         {stories.map((story) => (
                             <Link
                                 key={story.id}
                                 href={`/story/${story.slug}`}
                                 className="group h-full block"
                             >
-                                <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden hover:shadow-lg hover:border-primary/50 dark:hover:border-primary/50 transition-all duration-200 h-full flex flex-col">
+                                <div className="bg-white dark:bg-gray-900 rounded-xl overflow-hidden hover:shadow-xl hover:-translate-y-1 transition-all duration-300 h-full flex flex-col border border-gray-100 dark:border-gray-800">
                                     {/* Cover Image */}
-                                    <div className="aspect-[2/3] bg-gradient-to-br from-orange-100 to-orange-200 dark:from-gray-700 dark:to-gray-600 relative overflow-hidden flex-shrink-0">
+                                    <div className="aspect-[2/3] bg-gray-100 dark:bg-gray-800 relative overflow-hidden">
                                         {story.coverImage ? (
                                             <img
                                                 src={story.coverImage}
                                                 alt={story.title}
-                                                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
+                                                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                                             />
                                         ) : (
-                                            <div className="w-full h-full flex items-center justify-center">
-                                                <BookOpen className="w-16 h-16 text-orange-300 dark:text-gray-500" />
+                                            <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-orange-50 to-orange-100 dark:from-gray-800 dark:to-gray-700">
+                                                <BookOpen className="w-12 h-12 text-orange-200 dark:text-gray-600" />
                                             </div>
                                         )}
                                         {/* Views Badge */}
-                                        <div className="absolute top-2 right-2 bg-black/60 backdrop-blur-sm text-white text-xs px-2 py-1 rounded-full flex items-center gap-1">
-                                            <span>👁️ {story.views.toLocaleString()}</span>
+                                        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-3 pt-8 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                            <div className="text-white text-xs font-medium flex items-center gap-2">
+                                                <span>👁️ {story.views.toLocaleString()}</span>
+                                                <span>•</span>
+                                                <span>{story._count.chapters} chương</span>
+                                            </div>
                                         </div>
                                     </div>
 
                                     {/* Story Info */}
-                                    <div className="p-4 flex flex-col flex-1">
-                                        <h3 className="font-semibold text-gray-900 dark:text-white line-clamp-2 mb-2 group-hover:text-primary transition-colors">
+                                    <div className="p-3 flex flex-col flex-1">
+                                        <h3 className="font-bold text-gray-900 dark:text-white line-clamp-2 mb-1 group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors text-sm sm:text-base">
                                             {story.title}
                                         </h3>
                                         {story.authorName && (
-                                            <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
-                                                {t('public.home.author')}: {story.authorName}
+                                            <p className="text-xs text-gray-500 dark:text-gray-400 line-clamp-1">
+                                                {story.authorName}
                                             </p>
                                         )}
-                                        {story.description && (
-                                            <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-2 mb-3">
-                                                {story.description}
-                                            </p>
-                                        )}
-                                        <div className="flex items-center gap-3 text-xs text-gray-500 dark:text-gray-400 mt-auto">
-                                            <span className="flex items-center gap-1">
-                                                <BookOpen className="w-3.5 h-3.5" />
-                                                {t('public.home.chapters_count', { count: story._count.chapters })}
-                                            </span>
-                                        </div>
                                     </div>
                                 </div>
                             </Link>

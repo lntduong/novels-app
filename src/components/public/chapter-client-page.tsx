@@ -3,15 +3,13 @@
 import React from 'react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
-import { ArrowLeft, Globe } from 'lucide-react'
+import { ArrowLeft } from 'lucide-react'
 import ReadingControls from '@/components/reader/reading-controls'
 import ChapterRating from '@/components/chapter/chapter-rating'
 import ChapterComments from '@/components/chapter/chapter-comments'
 import CommentForm from '@/components/chapter/comment-form'
 import SecureChapterReader from '@/components/chapter/secure-chapter-reader'
 import { useTranslation } from '@/components/providers/language-provider'
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
-import { ThemeToggle } from '@/components/theme-toggle'
 
 interface Chapter {
     id: string
@@ -48,7 +46,7 @@ export default function ChapterClientPage({
     nextChapter,
     currentIndex,
 }: ChapterClientPageProps) {
-    const { t, language, setLanguage } = useTranslation()
+    const { t } = useTranslation()
     const progressPercent = ((currentIndex + 1) / story.chaptersCount) * 100
 
     React.useEffect(() => {
@@ -83,45 +81,32 @@ export default function ChapterClientPage({
                 />
             </div>
 
-            {/* Header */}
-            <div className="sticky top-0 bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm border-b border-gray-200 dark:border-gray-700 z-40">
-                <div className="max-w-4xl mx-auto px-4 py-3">
-                    <div className="flex items-center justify-between gap-4">
+            {/* Header - Sticky & Immersive (Covers Global Header) */}
+            <div className="sticky top-0 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 z-[60] shadow-sm transition-all duration-300">
+                <div className="max-w-4xl mx-auto px-4 h-16 flex items-center justify-center relative">
+                    {/* Left: Back Button */}
+                    <div className="absolute left-4">
                         <Link href={`/story/${story.slug}`}>
-                            <Button variant="ghost" size="sm" className="gap-2">
-                                <ArrowLeft className="h-4 w-4" />
+                            <Button variant="ghost" size="sm" className="gap-2 pl-2 pr-2 sm:pr-4">
+                                <ArrowLeft className="h-5 w-5" />
                                 <span className="hidden sm:inline">{t('public.chapter.back_story')}</span>
                             </Button>
                         </Link>
+                    </div>
 
-                        <div className="flex-1 text-center">
-                            <p className="text-sm font-medium text-gray-900 dark:text-white truncate">
-                                {chapter.title}
-                            </p>
-                            <p className="text-xs text-gray-500 dark:text-gray-400">
-                                {t('public.chapter.chapter_progress', { current: currentIndex + 1, total: story.chaptersCount })}
-                            </p>
-                        </div>
+                    {/* Center: Title & Progress */}
+                    <div className="text-center max-w-[60%] sm:max-w-[70%]">
+                        <p className="text-sm font-bold text-gray-900 dark:text-gray-100 truncate">
+                            {chapter.title}
+                        </p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400">
+                            {t('public.chapter.chapter_progress', { current: currentIndex + 1, total: story.chaptersCount })}
+                        </p>
+                    </div>
 
-                        <div className="flex items-center gap-2">
-                            <ReadingControls />
-                            <ThemeToggle />
-                            <DropdownMenu>
-                                <DropdownMenuTrigger asChild>
-                                    <Button variant="ghost" size="icon" className="rounded-full">
-                                        <Globe className="h-5 w-5" />
-                                    </Button>
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent align="end">
-                                    <DropdownMenuItem onClick={() => setLanguage('vi')} className={language === 'vi' ? 'bg-orange-50 dark:bg-gray-700' : ''}>
-                                        Tiếng Việt
-                                    </DropdownMenuItem>
-                                    <DropdownMenuItem onClick={() => setLanguage('en')} className={language === 'en' ? 'bg-orange-50 dark:bg-gray-700' : ''}>
-                                        English
-                                    </DropdownMenuItem>
-                                </DropdownMenuContent>
-                            </DropdownMenu>
-                        </div>
+                    {/* Right: Settings */}
+                    <div className="absolute right-4">
+                        <ReadingControls />
                     </div>
                 </div>
             </div>

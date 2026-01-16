@@ -7,6 +7,7 @@
         "actions": "Thao tác",
         "cancel": "Hủy",
         "save": "Lưu",
+        "regenerate_suffix": "(Tạo lại)",
         "saving": "Đang lưu...",
         "delete": "Xóa",
         "deleting": "Đang xóa...",
@@ -21,14 +22,16 @@
         "username": "Tên đăng nhập",
         "nickname": "Biệt danh",
         "birthDate": "Ngày sinh",
-        "logout": "Đăng xuất"
+        "logout": "Đăng xuất",
+        "slogan": "Khám phá thế giới tiểu thuyết"
     },
     "profile": {
         "title": "Hồ sơ của tôi",
         "subtitle": "Quản lý thông tin tài khoản",
         "change_avatar": "Đổi ảnh đại diện",
         "nickname": "Biệt danh",
-        "birth_date": "Ngày sinh"
+        "birth_date": "Ngày sinh",
+        "security_settings": "Cài đặt bảo mật"
     },
     "admin": {
         "welcome": "Chào mừng trở lại! Đây là tổng quan về nền tảng của bạn.",
@@ -41,7 +44,6 @@
         "users": {
             "title": "Quản lý Người dùng",
             "subtitle": "Quản lý người dùng và phân quyền",
-            "create_button": "Thêm người dùng",
             "create_button": "Thêm người dùng",
             "create_dialog_title": "Thêm người dùng mới",
             "edit_dialog_title": "Chỉnh sửa tài khoản",
@@ -203,7 +205,9 @@
             "button": "Đăng nhập",
             "loading": "Đang đăng nhập...",
             "no_account": "Chưa có tài khoản?",
-            "register_link": "Đăng ký ngay"
+            "register_link": "Đăng ký ngay",
+            "forgot_password": "Quên mật khẩu?",
+            "or": "Hoặc"
         },
         "register": {
             "title": "Đăng ký",
@@ -218,6 +222,42 @@
             "error_exists": "Email đã được sử dụng",
             "error_generic": "Đăng ký thất bại",
             "check_email": "Đăng ký thành công! Vui lòng kiểm tra email để xác thực tài khoản."
+        }
+    },
+    "security": {
+        "title": "Cài đặt bảo mật",
+        "subtitle": "Quản lý bảo mật và tùy chọn khôi phục tài khoản.",
+        "recovery_codes": {
+            "title": "Mã khôi phục hai lớp",
+            "description": "Mã khôi phục có thể được sử dụng để truy cập tài khoản nếu bạn quên mật khẩu.\nLưu ý: Hãy lưu mã này ở nơi an toàn. Đây là cách duy nhất để khôi phục tài khoản.",
+            "no_codes_title": "Chưa có mã hiển thị",
+            "no_codes_desc": "Chúng tôi không thể hiển thị mã cũ vì lý do bảo mật. Hãy tạo mã mới nếu bạn đã làm mất.",
+            "generate_btn": "Tạo mã mới",
+            "generating": "Đang tạo...",
+            "copy": "Sao chép",
+            "copied": "Đã chép",
+            "download": "Tải về .txt",
+            "hide": "Ẩn mã",
+            "important_title": "Quan trọng",
+            "important_desc": "Những mã này chỉ hiển thị một lần duy nhất. Vui lòng lưu lại ngay lập tức.",
+            "confirm_generate": "Tạo mã mới sẽ vô hiệu hóa các mã cũ. Bạn có chắc chắn không?"
+        }
+    },
+    "auth_extra": {
+        "forgot_password": {
+            "page_title": "Quên mật khẩu",
+            "page_subtitle": "Nhập email và mã khôi phục để đặt lại mật khẩu.",
+            "email_label": "Địa chỉ Email",
+            "code_label": "Mã khôi phục",
+            "code_placeholder": "XXXX-XXXX",
+            "code_help": "Định dạng: Mã 8 ký tự được lưu từ hồ sơ của bạn.",
+            "new_password_label": "Mật khẩu mới",
+            "confirm_password_label": "Xác nhận mật khẩu",
+            "submit_btn": "Đặt lại mật khẩu",
+            "submitting": "Đang xử lý...",
+            "success_message": "Đặt lại mật khẩu thành công! Bạn có thể đăng nhập bằng mật khẩu mới.",
+            "back_login": "Quay lại Đăng nhập",
+            "return_login": "Về trang Đăng nhập"
         }
     }
 }

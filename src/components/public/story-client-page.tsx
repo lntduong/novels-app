@@ -4,11 +4,10 @@ import { useState, useEffect } from 'react'
 
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
-import { ArrowLeft, BookOpen, Clock, Eye, Globe } from 'lucide-react'
+import { ArrowLeft, BookOpen, Clock, Eye, Share2, Check } from 'lucide-react'
+
 import ViewTracker from '@/components/view-tracker'
 import { useTranslation } from '@/components/providers/language-provider'
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
-import { ThemeToggle } from '@/components/theme-toggle'
 
 interface Chapter {
     id: string
@@ -41,6 +40,13 @@ export default function StoryClientPage({ story }: StoryClientPageProps) {
     const [isBookmarked, setIsBookmarked] = useState(false)
     const [lastReadChapter, setLastReadChapter] = useState<{ slug: string, order: number } | null>(null)
     const [isLoadingUser, setIsLoadingUser] = useState(true)
+    const [isCopied, setIsCopied] = useState(false)
+
+    const handleShare = () => {
+        navigator.clipboard.writeText(window.location.href)
+        setIsCopied(true)
+        setTimeout(() => setIsCopied(false), 2000)
+    }
 
     useEffect(() => {
         // Check bookmark and history on mount
@@ -104,42 +110,18 @@ export default function StoryClientPage({ story }: StoryClientPageProps) {
         <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
             <ViewTracker slug={story.slug} />
 
-            {/* Language Switcher - Absolute positioned */}
-            <div className="absolute top-4 right-4 z-10 flex items-center gap-2">
-                <ThemeToggle />
-                <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="icon" className="rounded-full bg-white/50 dark:bg-black/50 backdrop-blur-sm">
-                            <Globe className="h-5 w-5" />
-                        </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                        <DropdownMenuItem onClick={() => setLanguage('vi')} className={language === 'vi' ? 'bg-orange-50 dark:bg-gray-700' : ''}>
-                            Tiếng Việt
-                        </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => setLanguage('en')} className={language === 'en' ? 'bg-orange-50 dark:bg-gray-700' : ''}>
-                            English
-                        </DropdownMenuItem>
-                    </DropdownMenuContent>
-                </DropdownMenu>
-            </div>
-
             {/* Hero Section with Cover */}
             <div className="bg-gradient-to-b from-orange-50 to-white dark:from-gray-800 dark:to-gray-900 border-b border-gray-200 dark:border-gray-700">
                 <div className="max-w-6xl mx-auto px-4 py-8">
                     <div className="flex justify-between items-center mb-6">
                         <Link href="/">
-                            <Button variant="ghost" size="sm">
-                                <ArrowLeft className="h-4 w-4 mr-2" />
-                                {t('public.story.back_home')}
+                            <Button variant="ghost" size="sm" className="pl-2 sm:pl-4">
+                                <ArrowLeft className="h-4 w-4 md:mr-2" />
+                                <span className="hidden md:inline">{t('public.story.back_home')}</span>
                             </Button>
                         </Link>
-                        <Link href="/library">
-                            <Button variant="outline" size="sm" className="hidden sm:flex">
-                                <BookOpen className="h-4 w-4 mr-2" />
-                                My Library
-                            </Button>
-                        </Link>
+
+
                     </div>
 
                     <div className="flex flex-col md:flex-row gap-8">
@@ -166,6 +148,15 @@ export default function StoryClientPage({ story }: StoryClientPageProps) {
                                 <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-3 flex-1 mr-4">
                                     {story.title}
                                 </h1>
+                                <Button
+                                    size="icon"
+                                    variant="outline"
+                                    className="rounded-full shrink-0 mr-2 bg-white/50 dark:bg-gray-800/50 hover:bg-orange-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 border-gray-200 dark:border-gray-700"
+                                    onClick={handleShare}
+                                    title={t('public.story.share', { defaultValue: 'Share' })}
+                                >
+                                    {isCopied ? <Check className="w-5 h-5 text-green-500" /> : <Share2 className="w-5 h-5" />}
+                                </Button>
                                 <Button
                                     size="icon"
                                     variant="outline"
@@ -218,11 +209,11 @@ export default function StoryClientPage({ story }: StoryClientPageProps) {
 
                             {/* Description */}
                             {story.description && (
-                                <div className="mb-6">
+                                <div className="mb-6 overflow-hidden">
                                     <h2 className="text-sm font-semibold text-gray-900 dark:text-white uppercase tracking-wide mb-2">
                                         {t('public.story.intro')}
                                     </h2>
-                                    <p className="text-gray-700 dark:text-gray-300 leading-relaxed whitespace-pre-line">
+                                    <p className="text-gray-700 dark:text-gray-300 leading-relaxed whitespace-pre-line break-words">
                                         {story.description}
                                     </p>
                                 </div>

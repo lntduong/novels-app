@@ -41,6 +41,7 @@ model User {
   chapterComments ChapterComment[]
   bookmarks       Bookmark[]
   readingHistory  ReadingHistory[]
+  recoveryCodes   RecoveryCode[]
 
   @@map("users")
 }
@@ -163,4 +164,17 @@ model ReadingHistory {
   @@index([userId])
   @@index([updatedAt])
   @@map("reading_history")
+}
+
+model RecoveryCode {
+  id        String   @id @default(uuid())
+  userId    String
+  code      String   // Hashed code
+  used      Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("recovery_codes")
 }

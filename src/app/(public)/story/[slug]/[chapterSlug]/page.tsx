@@ -2,6 +2,47 @@ import { notFound } from 'next/navigation'
 import { prisma } from '@/lib/prisma'
 import ChapterClientPage from '@/components/public/chapter-client-page'
 
+import { Metadata } from 'next'
+
+export async function generateMetadata({ params }: { params: Promise<{ slug: string; chapterSlug: string }> }): Promise<Metadata> {
+    const { slug, chapterSlug } = await params
+    const story = await prisma.story.findUnique({
+        where: { slug },
+        select: { title: true, authorName: true, coverImage: true, chapters: { where: { slug: chapterSlug }, select: { title: true } } }
+    })
+
+    if (!story || !story.chapters[0]) {
+        return {
+            title: 'Chapter Not Found',
+        }
+    }
+
+    const chapter = story.chapters[0]
+    const title = `${chapter.title} - ${story.title}`
+    const description = `Read ${chapter.title} of ${story.title} by ${story.authorName || 'Unknown author'} online for free.`
+    const images = story.coverImage ? [story.coverImage] : []
+
+    return {
+        title: title,
+        description: description,
+        openGraph: {
+            title: title,
+            description: description,
+            type: 'book',
+            authors: story.authorName ? [story.authorName] : undefined,
+            images,
+        },
+        twitter: {
+            card: 'summary_large_image',
+            title: title,
+            description: description,
+            images,
+        },
+    }
+}
+
+
+
 export default async function ChapterReaderPage({
     params,
 }: {
@@ -9,24 +50,10 @@ export default async function ChapterReaderPage({
 }) {
     const { slug, chapterSlug } = await params
 
-    const story = await prisma.story.findUnique({
-        where: { slug, status: 'PUBLISHED' },
-        include: {
-            chapters: {
-                orderBy: { order: 'asc' },
-                select: {
-                    id: true,
-                    title: true,
-                    slug: true,
-                    order: true,
-                }
-            },
-        },
-    })
+    // This query is leftover from previous attempts or might need adjustment if logic was duplicated. 
+    // But based on current file state, this `const story = ...` follows.
+    // However, looking at the file, line 45 is `const story = ...`.
 
-    if (!story) {
-        notFound()
-    }
 
     // Need to fetch the full chapter content for the *current* chapter separately
     // OR fetch it in the first query but select only necessary fields for others.
@@ -49,6 +76,8 @@ export default async function ChapterReaderPage({
             id: true,
             title: true,
             slug: true,
+            authorName: true,
+            coverImage: true,
             chapters: {
                 orderBy: { order: 'asc' },
                 select: {
@@ -60,6 +89,7 @@ export default async function ChapterReaderPage({
             }
         }
     })
+
 
     if (!storyMetadata) notFound()
 
@@ -81,18 +111,66 @@ export default async function ChapterReaderPage({
     const nextChapter =
         currentIndex < storyMetadata.chapters.length - 1 ? storyMetadata.chapters[currentIndex + 1] : null
 
+    // structured data for breadcrumbs and chapter
+    const jsonLd = {
+        '@context': 'https://schema.org',
+        '@graph': [
+            {
+                '@type': 'BreadcrumbList',
+                itemListElement: [
+                    {
+                        '@type': 'ListItem',
+                        position: 1,
+                        name: 'Home',
+                        item: 'https://novels.yangyu.win',
+                    },
+                    {
+                        '@type': 'ListItem',
+                        position: 2,
+                        name: storyMetadata.title,
+                        item: `https://novels.yangyu.win/story/${storyMetadata.slug}`,
+                    },
+                    {
+                        '@type': 'ListItem',
+                        position: 3,
+                        name: fullChapter.title,
+                    },
+                ],
+            },
+            {
+                '@type': 'WebPage',
+                name: `${fullChapter.title} - ${storyMetadata.title}`,
+                description: `Read ${fullChapter.title} of ${storyMetadata.title} online`,
+                isPartOf: {
+                    '@type': 'Book',
+                    name: storyMetadata.title,
+                    author: {
+                        '@type': 'Person',
+                        name: storyMetadata.authorName || 'Unknown',
+                    },
+                },
+            },
+        ],
+    }
+
     return (
-        <ChapterClientPage
-            chapter={fullChapter}
-            story={{
-                id: storyMetadata.id,
-                title: storyMetadata.title,
-                slug: storyMetadata.slug,
-                chaptersCount: storyMetadata.chapters.length
-            }}
-            previousChapter={previousChapter}
-            nextChapter={nextChapter}
-            currentIndex={currentIndex}
-        />
+        <>
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+            />
+            <ChapterClientPage
+                chapter={fullChapter}
+                story={{
+                    id: storyMetadata.id,
+                    title: storyMetadata.title,
+                    slug: storyMetadata.slug,
+                    chaptersCount: storyMetadata.chapters.length
+                }}
+                previousChapter={previousChapter}
+                nextChapter={nextChapter}
+                currentIndex={currentIndex}
+            />
+        </>
     )
 }

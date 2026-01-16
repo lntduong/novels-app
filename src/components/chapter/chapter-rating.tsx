@@ -91,8 +91,8 @@ export default function ChapterRating({ chapterId }: ChapterRatingProps) {
                 Đánh giá chương này
             </h3>
 
-            <div className="flex items-center gap-3">
-                <div className="flex items-center gap-0.5">
+            <div className="flex flex-col items-center justify-center p-6 bg-gray-50 dark:bg-gray-800/50 rounded-xl border border-gray-100 dark:border-gray-800">
+                <div className="flex items-center gap-1 mb-2">
                     {[1, 2, 3, 4, 5].map((star) => (
                         <button
                             key={star}
@@ -100,23 +100,35 @@ export default function ChapterRating({ chapterId }: ChapterRatingProps) {
                             onMouseEnter={() => setHoveredStar(star)}
                             onMouseLeave={() => setHoveredStar(0)}
                             disabled={loading}
-                            className="transition-transform hover:scale-110 disabled:opacity-50"
+                            className="p-1 transition-all hover:scale-110 focus:outline-none disabled:opacity-50 group"
                         >
                             <Star
-                                className={`w-5 h-5 ${star <= (hoveredStar || userRating || 0)
-                                        ? 'fill-primary text-primary'
-                                        : 'text-gray-300 dark:text-gray-600'
+                                className={`w-8 h-8 transition-colors ${star <= (hoveredStar || userRating || 0)
+                                        ? 'fill-yellow-400 text-yellow-400 drop-shadow-sm'
+                                        : 'text-gray-300 dark:text-gray-600 fill-transparent'
                                     }`}
+                                strokeWidth={1.5}
                             />
                         </button>
                     ))}
                 </div>
 
-                <div className="text-xs text-gray-600 dark:text-gray-400">
-                    <span className="font-semibold text-gray-900 dark:text-white">
-                        {average.toFixed(1)}
-                    </span>{' '}
-                    ({count} đánh giá)
+                <div className="h-6 text-sm font-medium text-gray-600 dark:text-gray-300 transition-opacity duration-200">
+                    {hoveredStar ? (
+                        <span className="text-primary">
+                            {hoveredStar === 1 && 'Tệ'}
+                            {hoveredStar === 2 && 'Bình thường'}
+                            {hoveredStar === 3 && 'Khá'}
+                            {hoveredStar === 4 && 'Hay'}
+                            {hoveredStar === 5 && 'Tuyệt vời'}
+                        </span>
+                    ) : (
+                        userRating ? 'Cảm ơn bạn đã đánh giá!' : 'Chọn sao để đánh giá'
+                    )}
+                </div>
+
+                <div className="text-xs text-gray-400 dark:text-gray-500 mt-1">
+                    Điểm trung bình: <span className="font-semibold text-gray-700 dark:text-gray-200">{average.toFixed(1)}</span> ({count} đánh giá)
                 </div>
             </div>
 
