@@ -178,3 +178,18 @@ model RecoveryCode {
   @@index([userId])
   @@map("recovery_codes")
 }
+
+model PageView {
+  id        String   @id @default(uuid())
+  path      String
+  ip        String?
+  country   String?
+  city      String?
+  browser   String?
+  device    String?
+  os        String?
+  createdAt DateTime @default(now())
+
+  @@index([createdAt])
+  @@map("page_views")
+}

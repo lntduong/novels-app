@@ -4,6 +4,7 @@ import "./globals.css";
 import { LanguageProvider } from '@/components/providers/language-provider';
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import { ContentProtection } from "@/components/providers/content-protection";
+import AnalyticsTracker from "@/components/analytics/AnalyticsTracker";
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://novels.yangyu.win'),
@@ -70,6 +71,7 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <ContentProtection />
+          <AnalyticsTracker />
           <LanguageProvider>
             {children}
           </LanguageProvider>

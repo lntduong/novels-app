@@ -124,6 +124,19 @@
                     "preview_alt": "Xem trước ảnh bìa"
                 }
             }
+        },
+        "analytics": {
+            "traffic_overview": "Tổng quan lưu lượng (7 Ngày)",
+            "visitors_by_country": "Khách theo quốc gia",
+            "recent_visitors": "Khách truy cập gần đây",
+            "table": {
+                "ip": "Địa chỉ IP",
+                "location": "Vị trí",
+                "path": "Đường dẫn",
+                "browser": "Trình duyệt",
+                "time": "Thời gian",
+                "no_data": "Chưa có lượt truy cập nào"
+            }
         }
     },
     "roles": {

@@ -124,6 +124,19 @@
                     "preview_alt": "Cover preview"
                 }
             }
+        },
+        "analytics": {
+            "traffic_overview": "Traffic Overview (7 Days)",
+            "visitors_by_country": "Visitors by Country",
+            "recent_visitors": "Recent Visitors",
+            "table": {
+                "ip": "IP Address",
+                "location": "Location",
+                "path": "Path",
+                "browser": "Browser",
+                "time": "Time",
+                "no_data": "No recent visits"
+            }
         }
     },
     "roles": {

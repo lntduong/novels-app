@@ -8,17 +8,17 @@ export const metadata: Metadata = {
     description: 'Admin Dashboard',
 }
 
+import { getAnalyticsData } from '@/lib/analytics'
+
 export default async function AdminDashboard() {
     const session = await auth()
     // User check handled in layout
 
-    // Note: In a real app we might want to check roles here too, 
-    // although layout/middleware should handle basic protection.
-
-    const [storiesCount, chaptersCount, usersCount] = await Promise.all([
+    const [storiesCount, chaptersCount, usersCount, analytics] = await Promise.all([
         prisma.story.count(),
         prisma.chapter.count(),
         prisma.user.count(),
+        getAnalyticsData(),
     ])
 
     return (
@@ -26,6 +26,7 @@ export default async function AdminDashboard() {
             storiesCount={storiesCount}
             chaptersCount={chaptersCount}
             usersCount={usersCount}
+            analytics={analytics}
         />
     )
 }
